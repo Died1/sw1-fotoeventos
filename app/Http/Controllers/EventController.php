@@ -7,6 +7,8 @@ use App\Models\Photographer;
 use App\Models\Photo;
 use Illuminate\Http\Request;
 use App\Http\Requests\EventRequest;
+use App\Models\User;
+use App\Traits\NotificationTrait;
 use App\Traits\ReKognitionTrait;
 use Illuminate\Support\Facades\Storage;
 use Aws\Rekognition\RekognitionClient;
@@ -18,11 +20,12 @@ use Endroid\QrCode\Label\LabelAlignment;
 use Endroid\QrCode\Label\Font\NotoSans;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
     use ReKognitionTrait;
-
+    use NotificationTrait;
 
 
 
@@ -150,5 +153,15 @@ class EventController extends Controller
 
         // No se encontraron coincidencias
         return response()->json(['message' => 'No se encontraron coincidencias', $indexResult]);
+    }
+
+    public function notification()
+    {
+        $user = User::find(1);
+        $titulo = 'Título de la notificación';
+        $cuerpo = 'Cuerpo de la notificación';
+        $icono = 'https://salgadoeventos.com/wp-content/uploads/2021/04/MG_4393-1536x1024.jpg.webp';
+        $enlace = 'evento/ver/2';
+        $respuesta = $this->sendNotification($user->fcm_token, $titulo, $cuerpo, $icono, $enlace);
     }
 }

@@ -29,7 +29,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     #archivos
     Route::get('/media/{id}', [MediaController::class, 'download']);
     Route::post('/media', [MediaController::class, 'upload']);
-    
+
     Route::post('/tokenFCM', [UserController::class, 'tokenFCM']);
 });
 #publicas
@@ -39,4 +39,6 @@ Route::put('/photographers/{id}', [PhotographerController::class, 'update']);
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
+
+Route::get('/notification', [EventController::class, 'notification']);
 
