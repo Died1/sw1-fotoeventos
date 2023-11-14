@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Auth;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/events', [EventController::class, 'get']);
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/events', [EventController::class, 'get']);
 });
 
 

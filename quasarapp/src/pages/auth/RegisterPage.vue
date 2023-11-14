@@ -1,17 +1,11 @@
 <template>
   <div class="q-pa-md" style="max-width: 400px">
     <q-form @submit="onSubmit" class="q-gutter-md">
-      <q-input filled v-model="firstname" label="Your firstname *" hint="firstname o email" lazy-rules
+      <q-input filled v-model="firstname" label="Your firstname *" hint="firstname" lazy-rules
         :rules="[val => val && val.length > 0 || 'Please type something']" />
-      <q-input filled v-model="lastname" label="Your lastname *" hint="lastname o email" lazy-rules
+      <q-input filled v-model="lastname" label="Your lastname *" hint="lastname" lazy-rules
         :rules="[val => val && val.length > 0 || 'Please type something']" />
-      <q-input filled v-model="email" label="Your email *" hint="email o email" lazy-rules
-        :rules="[val => val && val.length > 0 || 'Please type something']" />
-      <q-input filled v-model="phone" label="Your phone *" hint="phone o email" lazy-rules
-        :rules="[val => val && val.length > 0 || 'Please type something']" />
-      <q-input filled v-model="address" label="Your address *" hint="address o email" lazy-rules
-        :rules="[val => val && val.length > 0 || 'Please type something']" />
-      <q-input filled v-model="biography" label="Your biografia *" hint="biografia o email" lazy-rules
+      <q-input filled v-model="email" label="Your email *" hint="email" lazy-rules
         :rules="[val => val && val.length > 0 || 'Please type something']" />
       <q-input filled type="password" v-model="password" label="Your password *" />
       <div>
@@ -38,20 +32,19 @@ export default defineComponent({
     const firstname = ref('');
     const lastname = ref('');
     const email = ref('');
-    const phone = ref('');
-    const address = ref('');
-    const biography = ref('');
-    const username = ref('');
     const password = ref('');
 
     async function onSubmit() {
       try {
         const datos = {
-          username: username.value,
+          firstname: firstname.value,
+          lastname: lastname.value,
+          email: email.value,
+          username: email.value,
           password: password.value
         };
 
-        const { data, status } = await api.post('/auth/login', datos);
+        const { data, status } = await api.post('/auth/register', datos);
         if (status === 200) {
           setToken(data.token);
           // Redirigir al usuario después de un inicio de sesión exitoso
@@ -68,10 +61,6 @@ export default defineComponent({
       firstname,
       lastname,
       email,
-      phone,
-      address,
-      biography,
-      username,
       password,
       onSubmit
     }
