@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\MediaController;
@@ -15,14 +16,9 @@ use Illuminate\Support\Facades\Auth;
 |--------------------------------------------------------------------------
 */
 
+Route::get('/events', [EventController::class, 'get']);
 Route::middleware(['auth:sanctum'])->group(function () {
-
-    Route::get('/events', [EventController::class, 'get']);
-    // Otras rutas protegidas por Sanctum
-
-
 });
-         bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                                                                                                                                                         
 
 
 Route::get('/events/qr', [EventController::class, 'qr']);
@@ -47,6 +43,3 @@ Route::post('/media', [MediaController::class, 'upload']);
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
-
-
-

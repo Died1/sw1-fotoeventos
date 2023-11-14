@@ -7,6 +7,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import("pages/auth/LoginPage.vue"),
   },
   {
+    path: "/register",
+    component: () => import("pages/auth/RegisterPage.vue"),
+  },
+  {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
     meta: { requiresAuth: true }, // Ruta protegida

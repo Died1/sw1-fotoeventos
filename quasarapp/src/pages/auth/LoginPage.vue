@@ -1,46 +1,41 @@
 <template>
-  <div class="q-pa-md flex flex-center">
-    <q-card class="q-gutter-md flex flex-center">
-      <q-card-section>
-        <q-form>
-          <q-input v-model="username" label="Username" outlined />
-          <q-input v-model="password" label="Password" type="password" outlined />
-          <q-btn @click="login" label="Login" color="primary" class="q-mt-md" />
-        </q-form>
-      </q-card-section>
-    </q-card>
+  <div class="q-pa-md" style="max-width: 400px">
+    <q-form @submit="onSubmit" class="q-gutter-md">
+      <q-input filled v-model="username" label="Your username *" hint="username o email" lazy-rules
+        :rules="[val => val && val.length > 0 || 'Please type something']" />
+      <q-input filled type="password" v-model="password" label="Your password *" />
+      <div>
+        <q-btn class="full-width" label="Ingresar" type="submit" color="primary" />
+      </div>
+    </q-form>
+
   </div>
 </template>
 
 <script lang="ts">
+
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { setToken } from '../../utils/auth';
 import { api } from 'boot/axios';
+import { setToken } from '../../utils/auth';
 
 
 export default defineComponent({
   name: 'LoginPage',
   setup() {
-
     const router = useRouter();
-    // Obtener el parámetro 'redirect' de la URL
     const redirectParam = router.currentRoute.value.query.redirect as string | undefined;
-
     const username = ref('');
     const password = ref('');
 
-
-
-    async function login() {
+    async function onSubmit() {
       try {
         const datos = {
           username: username.value,
           password: password.value
-
         };
-        
-        const { data, status } = await api.post('/login', datos);
+
+        const { data, status } = await api.post('/auth/login', datos);
         if (status === 200) {
           setToken(data.token);
           // Redirigir al usuario después de un inicio de sesión exitoso
@@ -56,7 +51,7 @@ export default defineComponent({
     return {
       username,
       password,
-      login
+      onSubmit
     }
   }
 });
