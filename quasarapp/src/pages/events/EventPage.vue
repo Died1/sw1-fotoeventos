@@ -184,16 +184,29 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { api } from 'boot/axios'
+import { obtenerToken } from '../../utils/auth';
 
 export default {
 
   setup() {
+    const details = ref('');
+    const dateStart = ref('2019/02/01');
+    const dateEnd = ref('2019/02/01');
+    const qr_url = ref('');
+    const cover_url = ref('');
+    const address = ref('');
+
+
     const events = ref([]);
 
     const fetchEvents = async () => {
       try {
-        const { data } = await api.get('/events');
-        console.log(data)
+        const { data } = await api.get('/events', {
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${obtenerToken()}`,
+          },
+        });
         events.value = data;
       } catch (error) {
         console.log(error);
@@ -203,17 +216,28 @@ export default {
     const addEvent = async () => {
       try {
 
-        const { data } = await api.post('/events', {
-          "title": "Un título extremadamente largo que excede el nto, es inválido",
-          "detail": "Nueva descripción del evento",
-          "date_start": "2023-11-12",
-          "date_end": "2023-11-12",
-          "qr_url": "https://example.com/nuevo-qr",
-          "cover_url": "https://example.com/nueva-portada",
-          "address": "Nueva dirección del evento"
-        });
-        console.log(data)
-        events.value = data;
+        const config = {
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer 7|VT8zTrR7LWGEDzL7DWgOGhaFW1JsIVHRhMi4Exg6`,
+            // Puedes agregar otros encabezados según sea necesario
+          },
+        };
+
+        const datos = {
+          title: title.value,
+          detail: details.value,
+          date_start: dateStart.value,
+          date_end: dateEnd.value,
+          qr_url: qr_url.value,
+          cover_url: cover_url.value,
+          address: address.value
+        };
+        console.log(datos);
+        const { data } = await api.post('/events', datos, config);
+        // Agrega el nuevo evento a la lista existente
+        events.value.push(data);
+
       } catch (error) {
         console.log(error);
       }
@@ -244,15 +268,15 @@ export default {
       events,
       tab: ref('mails'),
       title,
-      details: ref(''),
+      details,
       activeTab: ref(''),
       innerTab: ref('innerMails'),
       splitterModel: ref(20),
       fixed: ref(false),
       date: ref('2019/02/01'),
       time: ref('10:56'),
-      dateStart: ref('2019/02/01'),
-      dateEnd: ref('2019/02/01'),
+      dateStart,
+      dateEnd,
       timeStart: ref('10:56'),
       timeEnd: ref('10:56'),
       privacidad: ref(''),

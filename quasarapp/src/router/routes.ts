@@ -21,6 +21,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/events",
     component: () => import("layouts/MainLayout.vue"),
+    meta: { requiresAuth: true },
     children: [
       //{ path: "", component: () => import("pages/IndexPage.vue") },
       { path: "", component: () => import("pages/events/EventPage.vue") }

@@ -27,7 +27,8 @@ class User extends Authenticatable
         'address',
         'biography',
         'type',
-        'avatar_url'
+        'avatar_url',
+        'fcm_token'
     ];
 
     /**

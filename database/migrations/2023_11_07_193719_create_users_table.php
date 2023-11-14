@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username',50);
+            $table->string('username',100);
             $table->string('password', 100);
             $table->string('firstname', 100);
             $table->string('lastname', 100);
@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('biography', 1000)->nullable();
             $table->string('type', 100)->nullable();
             $table->string('avatar_url')->nullable();
+            $table->string('fcm_token')->nullable();
             $table->timestamps();
         });
     }
