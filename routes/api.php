@@ -39,6 +39,9 @@ Route::put('/photographers/{id}', [PhotographerController::class, 'update']);
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
+Route::get('/profile/{id}', [UserController::class, 'find']);
+Route::put('/profile', [UserController::class, 'update']);
+
 
 Route::get('/notification', [EventController::class, 'notification']);
 

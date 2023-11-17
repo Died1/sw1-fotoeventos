@@ -10,6 +10,7 @@ use App\Http\Requests\EventRequest;
 use App\Models\User;
 use App\Traits\NotificationTrait;
 use App\Traits\ReKognitionTrait;
+use App\Traits\S3Trait;
 use Illuminate\Support\Facades\Storage;
 use Aws\Rekognition\RekognitionClient;
 
@@ -26,6 +27,7 @@ class EventController extends Controller
 {
     use ReKognitionTrait;
     use NotificationTrait;
+    use S3Trait;
 
 
 
@@ -46,7 +48,14 @@ class EventController extends Controller
 
     public function save(EventRequest $request)
     {
+
+        $creator = Auth::user();
+
         $validatedData = $request->validated();
+
+        $validatedData['qr_url'] = $this->qr();
+
+        $validatedData['creator_id'] = $creator->id;
 
         return Event::create($validatedData);
     }
@@ -102,20 +111,19 @@ class EventController extends Controller
             ->size(300)
             ->margin(10)
             ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
-
-
             ->labelText('This is the label')
             ->labelFont(new NotoSans(20))
             ->labelAlignment(LabelAlignment::Center)
             ->validateResult(false)
             ->build();
 
-        // Guardar el código QR como un archivo PNG
-        $filename = 'qr_code.png';
-        $result->saveToFile($filename);
 
-        // Mostrar el código QR en una página web
-        echo '<img src="' . asset('qr_code.png') . ' " alt="QR Code">';
+        $filename = 'qr_codeeddy.png';
+        // Save it to a file
+        $string=$result->getString();
+
+        return $this->saveS3($string, $filename);
+
     }
     public function compareWithCollection(Request $request)
     {

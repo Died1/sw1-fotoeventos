@@ -18,11 +18,11 @@ trait S3Trait
                     'secret' => env('AWS_SECRET_ACCESS_KEY'),
                 ],
             ]);
-            $fileName = uniqid().$file->getClientOriginalName();
+            $fileName = 'qr_code.png';
             $s3->putObject([
                 'Bucket' => env('AWS_BUCKET'),
-                'Key' => $path.$fileName,
-                'Body' => file_get_contents($file),
+                'Key' => $fileName,
+                'Body' => $fileName,
                 'ACL' => 'public-read',
             ]);
             $path = $s3->getObjectUrl('sw1-fotos', $fileName);

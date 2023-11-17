@@ -1,10 +1,18 @@
 import axios from "axios";
 
+class Event {
 
-class VEvent {
-  async getEvents(){
+  add(){
 
-  };
+  }
+
+  update(){
+
+  }
+
+  
+
 }
 
-export default VEvent;
+
+export default Event;

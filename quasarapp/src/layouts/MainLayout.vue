@@ -9,35 +9,6 @@
           <span class="q-ml-sm">Photos</span>
         </q-toolbar-title>
 
-        <!-- <q-space />
-
-        <q-input class="GPL__toolbar-input" dense standout="bg-primary" v-model="search" placeholder="Search">
-          <template v-slot:prepend>
-            <q-icon v-if="search === ''" name="search" />
-            <q-icon v-else name="clear" class="cursor-pointer" @click="search = ''" />
-          </template>
-        </q-input> -->
-
-       <!--  <q-btn v-if="$q.screen.gt.xs" flat dense no-wrap color="primary" icon="add" no-caps label="Create"
-          class="q-ml-sm q-px-md">
-          <q-menu anchor="top end" self="top end">
-            <q-list class="text-grey-8" style="min-width: 100px">
-              <q-item aria-hidden="true">
-                <q-item-section class="text-uppercase text-grey-7" style="font-size: 0.7rem">Create New</q-item-section>
-              </q-item>
-              <q-item v-for="menu in createMenu" :key="menu.text" clickable v-close-popup aria-hidden="true">
-                <q-item-section avatar>
-                  <q-icon :name="menu.icon" />
-                </q-item-section>
-                <q-item-section>{{ menu.text }}</q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
-
-        <q-btn v-if="$q.screen.gt.xs" flat dense no-wrap color="primary" icon="cloud_upload" no-caps label="Upload"
-          class="q-ml-sm q-px-md" /> -->
-
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
@@ -100,10 +71,6 @@
 
           <q-separator class="q-my-md" />
 
-          <!-- <EssentialLink v-for="link in links2" :key="link.title" v-bind="link" />
-
-          <q-separator class="q-my-md" /> -->
-
           <EssentialLink v-for="link in links3" :key="link.title" v-bind="link" />
 
         </q-list>
@@ -124,19 +91,6 @@
             <q-icon size="22px" name="collections_bookmark" />
             <div class="GPL__side-btn__label">Albums</div>
           </q-btn>
-
-          <!-- <q-btn round flat color="grey-8" stack no-caps size="26px" class="GPL__side-btn">
-            <q-icon size="22px" name="assistant" />
-            <div class="GPL__side-btn__label">Assistant</div>
-            <q-badge floating color="red" text-color="white" style="top: 8px; right: 16px">
-              1
-            </q-badge>
-          </q-btn>
-
-          <q-btn round flat color="grey-8" stack no-caps size="26px" class="GPL__side-btn">
-            <q-icon size="22px" name="group" />
-            <div class="GPL__side-btn__label">Sharing</div>
-          </q-btn> -->
 
           <q-btn round flat color="grey-8" stack no-caps size="26px" class="GPL__side-btn" tag="a" href="#/events">
             <q-icon size="22px" name="import_contacts" />
@@ -188,18 +142,6 @@ export default {
           icon: 'photo_album',
           link: '#/albums'
         },
-        /*  {
-           title: 'Assistant',
-           caption: 'assistant',
-           icon: 'assistant',
-           link: '#/assistant'
-         },
-         {
-           title: 'Sharing',
-           caption: 'Sharing',
-           icon: 'people',
-           link: '#/sharing'
-         }, */
         {
           title: 'Events',
           caption: 'eventos',
@@ -223,10 +165,10 @@ export default {
       ],
       links3: [
         {
-          title: 'Settings',
-          caption: 'settings',
-          icon: 'settings',
-          link: 'settings'
+          title: 'Profile',
+          caption: 'profile',
+          icon: 'person',
+          link: '#/profile'
         },
         {
           title: 'Help & Feedback',

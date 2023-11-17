@@ -12,6 +12,15 @@ class Photographer extends User
 
     protected $table = 'users';
 
+     // Añade una condición específica para los fotógrafos
+     protected static function booted()
+     {
+         static::addGlobalScope('photographer', function ($builder) {
+             $builder->where('type', 'photographer');
+         });
+     }
+
+
     public function eventsAssigned()
     {
         return $this->hasMany(Event::class, 'photographer_id');
