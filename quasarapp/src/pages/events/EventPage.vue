@@ -30,7 +30,7 @@
             <q-img src="https://i.imgur.com/fsyrScY.jpg" style="height: 200px;" />
 
             <q-card-section>
-              <!-- Pestañas para "Información" y "Detalles" -->
+
               <q-tabs inline narrow v-model="activeTab">
                 <q-tab name="info" label="informacion" />
                 <q-tab name="details" label="Detalles" />
@@ -38,7 +38,7 @@
             </q-card-section>
 
             <q-card-section>
-              <!-- Contenido de la pestaña activa (puedes usar v-if/v-else para mostrar una a la vez) -->
+
               <q-tab-panels v-model="activeTab">
                 <q-tab-panel name="info" class="row">
 
@@ -106,8 +106,8 @@
               <q-card class="bg-grey-3">
                 <img src="https://i.imgur.com/jwly0W6.jpeg" alt="Imagen" style="width: 100%; height: 200px;" />
 
-                <!-- Botón de actualización superpuesto en la esquina superior derecha -->
-                <q-btn v-close-popup @click="actualizarImagen" class="absolute-bottom-right" label="Añádir foto de portada"
+
+                <q-btn @click="actualizarImagen" class="absolute-bottom-right" label="Añádir foto de portada"
                   color="primary" />
               </q-card>
               <div class="q-gutter-md q-pa-md">
@@ -115,12 +115,12 @@
                 <q-item class="q-pa-none">
                   <q-item-section avatar>
                     <q-avatar>
-                      <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+                      <img :src="organizer.avatar_url ? organizer.avatar_url : 'https://cdn.quasar.dev/img/boy-avatar.png'">
                     </q-avatar>
                   </q-item-section>
 
                   <q-item-section>
-                    <q-item-label caption lines="1" class="text-bold">Eddy Flores</q-item-label>
+                    <q-item-label caption lines="1" class="text-bold">{{organizer.firstname + ' ' + organizer.lastname}}</q-item-label>
                     <q-item-label caption lines="1">Organizador - Tu perfil</q-item-label>
                   </q-item-section>
                 </q-item>
@@ -158,48 +158,6 @@
                   </div>
                 </div>
 
-                <q-btn flat label="+ Fecha y hora de finalización" color="primary" />
-
-
-                <div class="row">
-                  <div class="col-6 q-pr-sm">
-                    <q-input outlined v-model="dateEnd" mask="date" :rules="['date']" label="Fecha de finalización">
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                            <q-date v-model="dateEnd" minimal>
-                              <div class="row items-center justify-end">
-                                <q-btn v-close-popup label="Close" color="primary" flat />
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </div>
-                  <div class="col-6">
-                    <q-input outlined v-model="timeEnd" mask="time" :rules="['time']" label="Hora de finalización">
-                      <template v-slot:append>
-                        <q-icon name="access_time" class="cursor-pointer">
-                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                            <q-time v-model="timeEnd">
-                              <div class="row items-center justify-end">
-                                <q-btn v-close-popup label="Close" color="primary" flat />
-                              </div>
-                            </q-time>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </div>
-                </div>
-
-                <q-select outlined v-model="privacidad" :options="options" :dense="dense" :options-dense="denseOpts"
-                  label="¿Quién puede ver esto?">
-                  <template v-slot:prepend>
-                    <q-icon name="lock" />
-                  </template>
-                </q-select>
                 <q-input type="textarea" rows="4" outlined label="¿Cuales son los detalles?" v-model="details" />
               </div>
             </q-form>
@@ -218,11 +176,13 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { api } from 'boot/axios'
-import { obtenerToken } from '../../utils/auth';
-
+import { useAuthStore } from 'src/stores/auth';
 export default {
 
   setup() {
+    const authStore = useAuthStore();
+    const organizer = authStore.user.user;
+
     const activeTab = ref('informacion');
 
     const details = ref('');
@@ -238,12 +198,7 @@ export default {
 
     const fetchEvents = async () => {
       try {
-        const { data } = await api.get('/events', {
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${obtenerToken()}`,
-          },
-        });
+        const { data } = await api.get('/events', { headers: { AuthorizationRequired: true }});
         events.value = data;
       } catch (error) {
         console.log(error);
@@ -265,15 +220,6 @@ export default {
 
     const addEvent = async () => {
       try {
-
-        const config = {
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${obtenerToken()}`,
-
-          },
-        };
-
         const datos = {
           title: title.value,
           detail: details.value,
@@ -281,10 +227,10 @@ export default {
           date_end: dateEnd.value,
           qr_url: qr_url.value,
           cover_url: cover_url.value,
-          address: address.value
+          address: address.value,
         };
-        console.log(datos);
-        const { data } = await api.post('/events', datos, config);
+        
+        const { data } = await api.post('/events', datos , { headers: { AuthorizationRequired: true } });
         // Agrega el nuevo evento a la lista existente
         events.value.push(data);
 
@@ -338,6 +284,7 @@ export default {
     });
 
     return {
+      organizer,
       events,
       tab: ref('mails'),
       title,

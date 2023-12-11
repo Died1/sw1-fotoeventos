@@ -3,58 +3,76 @@
     <q-header elevated class="bg-white text-grey-8" height-hint="64">
       <q-toolbar class="GPL__toolbar" style="height: 64px">
         <q-btn flat dense round @click="toggleLeftDrawer" aria-label="Menu" icon="menu" class="q-mx-md" />
-
         <q-toolbar-title v-if="$q.screen.gt.sm" shrink class="row items-center no-wrap">
-          <img src="https://cdn.quasar.dev/img/layout-gallery/logo-google.svg">
-          <span class="q-ml-sm">Photos</span>
+          <q-item clickable to="/">
+            <img src="https://cdn.quasar.dev/img/layout-gallery/logo-google.svg">
+            <span class="q-ml-sm">Photos</span>
+          </q-item>
         </q-toolbar-title>
-
         <q-space />
 
-        <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn round dense flat color="grey-8" icon="notifications">
-            <q-badge color="red" text-color="white" floating>
-              2
-            </q-badge>
-            <q-tooltip>Notifications</q-tooltip>
-            <q-menu anchor="top end" self="top end">
-              <q-list class="text-grey-8" style="min-width: 100px">
-                <q-item aria-hidden="true">
-                  <q-item-section class="text-uppercase text-grey-7" style="font-size: 0.7rem">Create New</q-item-section>
-                </q-item>
-                <q-item v-for="menu in createMenu" :key="menu.text" clickable v-close-popup aria-hidden="true">
-                  <q-item-section avatar>
-                    <q-icon :name="menu.icon" />
-                  </q-item-section>
-                  <q-item-section>{{ menu.text }}</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
-          <q-btn round flat>
-            <q-avatar size="26px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png">
-            </q-avatar>
-            <q-tooltip>Account</q-tooltip>
-            <q-menu anchor="top end" self="top end">
-              <q-list class="text-grey-8" style="min-width: 100px">
-                <q-item aria-hidden="true">
-                  <q-item-section class="text-uppercase text-grey-7" style="font-size: 0.7rem">Create New</q-item-section>
-                </q-item>
-                <q-item v-for="menu in createMenu" :key="menu.text" clickable v-close-popup aria-hidden="true">
-                  <q-item-section avatar>
-                    <q-icon :name="menu.icon" />
-                  </q-item-section>
-                  <q-item-section>{{ menu.text }}</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
+        <q-btn-dropdown v-if="$q.screen.gt.sm" :menu-offset="[300, 5]" flat outline color="grey-8"
+          label="Explorar contenido">
+          <q-list>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label>Fotos</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label>Eventos</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
 
+        <q-input color="black" class="GPL__toolbar-input" dense outlined v-model="search" placeholder="Search">
+          <template v-slot:prepend>
+            <q-icon v-if="search === ''" name="search" />
+            <q-icon v-else name="clear" class="cursor-pointer" @click="search = ''" />
+          </template>
+          <q-btn v-if="search !== ''" color="grey-9" icon="search" dense flat rounded :to="`search?kw=${search}`"></q-btn>
+          <q-btn v-else color="grey-9" icon="image_search" dense flat rounded></q-btn>
+        </q-input>
+        <q-space />
+        <div class="q-gutter-sm row items-center no-wrap">
+          <template v-if="isAuthenticated">
+            <q-btn round dense flat color="grey-8" icon="notifications">
+              <q-badge v-if="notification.counter > 0" color="red" text-color="white" floating>
+                {{ notification.counter }}
+              </q-badge>
+              <q-tooltip>Notifications</q-tooltip>
+              <q-menu anchor="top end" self="top end" style="min-width:300px">
+                <q-list class="text-grey-8" style="min-width: 250px">
+                  <q-item aria-hidden="true">
+                    <q-item-section class="text-uppercase text-grey-7" style="font-size: 0.7rem">Create New</q-item-section>
+                  </q-item>
+                  <q-item v-for="menu in createMenu" :key="menu.text" clickable v-close-popup aria-hidden="true">
+                    <q-item-section avatar>
+                      <q-icon :name="menu.icon" />
+                    </q-item-section>
+                    <q-item-section>{{ menu.text }}</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+            <Menu />
+          </template>
+          <template v-else>
+            <q-btn  dense flat color="black" label="Login" to="/login" />
+            <q-btn  dense flat color="black" label="Register" to="/register" />
+          </template>
+          <q-space></q-space>
+          <q-btn round dense flat color="grey-8" icon="shopping_cart" @click="openCart">
+            <q-badge v-if="shopping.counter > 0" color="red" text-color="white" floating>
+              {{ shopping.counter }}
+            </q-badge>
+            <q-tooltip>Carrito de compras</q-tooltip>
+          </q-btn>
         </div>
       </q-toolbar>
     </q-header>
-    <q-separator />
 
     <q-drawer v-model="leftDrawerOpen" bordered behavior="mobile" @click="leftDrawerOpen = false">
       <q-scroll-area class="fit">
@@ -64,67 +82,70 @@
             <span class="q-ml-sm">Photos</span>
           </q-toolbar-title>
         </q-toolbar>
-
         <q-list padding>
-
           <EssentialLink v-for="link in links1" :key="link.title" v-bind="link" />
-
           <q-separator class="q-my-md" />
-
+          <EssentialLink v-for="link in links2" :key="link.title" v-bind="link" />
+          <q-separator class="q-my-md" />
           <EssentialLink v-for="link in links3" :key="link.title" v-bind="link" />
-
         </q-list>
-
       </q-scroll-area>
     </q-drawer>
-
     <q-page-container class="GPL__page-container">
       <router-view />
-      <q-page-sticky v-if="$q.screen.gt.sm" expand position="left">
-        <div class="fit q-pt-xl q-px-sm column">
-          <q-btn round flat color="grey-8" stack no-caps size="26px" class="GPL__side-btn" tag="a" href="#/photos">
-            <q-icon size="22px" name="photo" />
-            <div class="GPL__side-btn__label">Photos</div>
-          </q-btn>
-
-          <q-btn round flat color="grey-8" stack no-caps size="26px" class="GPL__side-btn" tag="a" href="#/albums">
-            <q-icon size="22px" name="collections_bookmark" />
-            <div class="GPL__side-btn__label">Albums</div>
-          </q-btn>
-
-          <q-btn round flat color="grey-8" stack no-caps size="26px" class="GPL__side-btn" tag="a" href="#/events">
-            <q-icon size="22px" name="import_contacts" />
-            <div class="GPL__side-btn__label">Events</div>
-          </q-btn>
-        </div>
-      </q-page-sticky>
     </q-page-container>
   </q-layout>
 </template>
 
-<script lang="ts">
-import { ref } from 'vue'
+<script>
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router';
 import EssentialLink from '../components/EssentialLink.vue';
+import shoppingStore from 'stores/shopping';
+import notificationStore from 'stores/notification';
+import { useAuthStore } from 'stores/auth';
+import Menu from './Menu.vue'
+
+
+
 
 export default {
-  name: 'AlbumPage',
+  name: 'GooglePhotosLayout',
   components: {
-    EssentialLink
+    EssentialLink,
+    Menu
   },
-
   setup() {
+
+
+
+
+    const router = useRouter();
+
+    const shopping = ref(shoppingStore());
+    const notification = ref(notificationStore());
+
+    const authStore = useAuthStore();
+    const isAuthenticated = computed(() => authStore.isAuthenticated);
+    const user = computed(() => authStore.user);
+
     const leftDrawerOpen = ref(false)
     const search = ref('')
     const storage = ref(0.26)
-
-
 
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value
     }
 
+    const openCart = () => {
+      router.push('/shoppingcart');
+    }
 
     return {
+      isAuthenticated,
+      shopping,
+      notification,
+
       leftDrawerOpen,
       search,
       storage,
@@ -138,59 +159,54 @@ export default {
         },
         {
           title: 'Albums',
-          caption: 'Albums',
+          caption: 'organiza tus fotos',
           icon: 'photo_album',
           link: '#/albums'
         },
         {
           title: 'Events',
-          caption: 'eventos',
+          caption: 'tus eventos como organizador',
           icon: 'book',
           link: '#/events'
         },
       ],
       links2: [
         {
-          title: 'Archive',
-          caption: 'archive',
-          icon: 'archive',
-          link: '/archive'
+          title: 'Panel de administracion',
+          caption: 'gestiona tus actividades como fototgrafo',
+          icon: 'archive ',
+          link: '#/padmin'
         },
         {
-          title: 'Trash',
-          caption: 'get_app',
-          icon: 'get_app',
-          link: '/get_app'
+          title: 'Compras',
+          caption: 'tus compras',
+          icon: 'shopping_cart',
+          link: '#/get_app'
         }
       ],
       links3: [
         {
-          title: 'Profile',
-          caption: 'profile',
+          title: 'Perfil',
+          caption: 'tu informacion personal',
           icon: 'person',
           link: '#/profile'
         },
         {
           title: 'Help & Feedback',
-          caption: 'help',
+          caption: 'ayuda y preguntas frecuentes',
           icon: 'help',
-          link: 'help'
+          link: '#/help'
         },
         {
           title: 'App Downloads',
-          caption: 'App Downloads',
+          caption: 'descarga la app para android',
           icon: 'get_app',
-          link: '/get_app'
+          link: '#/get_app'
         }
-      ],
-      createMenu: [
-        { icon: 'photo_album', text: 'Album' },
-        { icon: 'people', text: 'Shared Album' },
-        { icon: 'dashboard', text: 'Collage' },
-        { icon: 'book', text: 'Photo book' }
       ],
 
       toggleLeftDrawer,
+      openCart
     }
   }
 }
@@ -203,7 +219,7 @@ export default {
     height: 64px
 
   &__toolbar-input
-    width: 35%
+    width: 50%
 
   &__drawer-item
     line-height: 24px
@@ -237,5 +253,5 @@ export default {
 
   @media (min-width: 1024px)
     &__page-container
-      padding-left: 94px
+
 </style>

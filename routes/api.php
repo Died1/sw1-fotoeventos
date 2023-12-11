@@ -12,10 +12,11 @@ use App\Http\Controllers\AuthController;
 | API Routes
 |--------------------------------------------------------------------------
 */
+
+Route::get('/events/qr', [EventController::class, 'qr']);
 Route::middleware(['auth:sanctum'])->group(function () {
     #Eventos
     Route::get('/events', [EventController::class, 'get']);
-    Route::get('/events/qr', [EventController::class, 'qr']);
     Route::get('/events/{id}', [EventController::class, 'find']);
     Route::post('/events', [EventController::class, 'save']);
     Route::put('/events/{id}', [EventController::class, 'update']);
@@ -30,7 +31,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/media/{id}', [MediaController::class, 'download']);
     Route::post('/media', [MediaController::class, 'upload']);
 
-    Route::post('/tokenFCM', [UserController::class, 'tokenFCM']);
+    Route::post('/tokenFCM/{id}', [UserController::class, 'tokenFCM']);
 });
 #publicas
 Route::get('/photographers', [PhotographerController::class, 'get']);

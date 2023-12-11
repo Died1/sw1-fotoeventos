@@ -48,10 +48,14 @@ return [
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
-            
-            /* 'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false), */
+        ],
+        'gcs' => [
+            'driver' => 'gcs',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID', 'tu-project-id'),
+            'key_file' => storage_path('clodstoragecredential.json'),
+            'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', 'tu-bucket'),
+            'path_prefix' => env('GOOGLE_CLOUD_STORAGE_PATH_PREFIX', null),
+            'storage_api_uri' => env('GOOGLE_CLOUD_STORAGE_API_URI', null),
         ],
 
     ],

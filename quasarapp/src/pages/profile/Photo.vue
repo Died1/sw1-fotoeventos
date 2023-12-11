@@ -10,13 +10,14 @@
 <script  lang="ts">
 import { defineComponent, ref, PropType, watch } from 'vue';
 export default defineComponent({
-  props: {
+  /* props: {
     value: {
       type: Object as PropType<{ file: File | null; url: string }>,
       required: true,
     },
   },
   emits: ['update:modelValue', 'file-selected'],
+
   setup(props, { emit }) {
     const filePhoto = ref<File | null>(null);
 
@@ -41,13 +42,14 @@ export default defineComponent({
           url: URL.createObjectURL(file), // Crea una URL para la vista previa de la imagen
         };
       }
-    };
+    }; */
+    setup(){
     return {
-
+/*
       filePhoto,
       selectedPhoto,
       abrirSelectorDeArchivos,
-      handleFileChange,
+      handleFileChange, */
 
     }
   }

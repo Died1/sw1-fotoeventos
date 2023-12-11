@@ -1,7 +1,6 @@
 import {   RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
-
   {
     path: "/login",
     component: () => import("pages/auth/LoginPage.vue"),
@@ -13,41 +12,53 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
+    children: [
+      {
+        path: '',
+        component: () => import("pages/IndexPage.vue"),
+        props: route => ({ search: route.query.search })
+      }
+    ]
+  },
+  {
+    path: "/events/:id/details",
+    component: () => import("layouts/MainLayout.vue"),
+    children: [
+      {
+        path: '',
+        component: () => import("pages/events/EventDetail.vue"),
+
+      }
+    ]
+  },
+  {
+    path: "/search",
+    component: () => import("layouts/MainLayout.vue"),
     meta: { requiresAuth: true }, // Ruta protegida
     children: [
-      { path: "", component: () => import("pages/IndexPage.vue") }
-    ],
-  },
-  {
-    path: "/events",
-    component: () => import("layouts/MainLayout.vue"),
-    meta: { requiresAuth: true },
-    children: [
-      //{ path: "", component: () => import("pages/IndexPage.vue") },
-      { path: "", component: () => import("pages/events/EventPage.vue") }
-    ],
-  },
-  {
-    path: "/albums",
-    component: () => import("layouts/MainLayout.vue"),
-    children: [
-      //{ path: "", component: () => import("pages/IndexPage.vue") },
-      { path: "", component: () => import("pages/albums/AlbumPage.vue") }
-    ],
-  },
-  {
-    path: "/photos",
-    component: () => import("layouts/MainLayout.vue"),
-    children: [
-      { path: "", component: () => import("pages/photos/PhotoPage.vue") }
-    ],
+      {
+        path: '',
+        component: () => import("pages/SearchPage.vue"),
+        props: route => ({ kw: route.query.kw })
+      }
+    ]
   },
 
+  //RUTAS PROTEGIDAS
   {
-    path: "/profile",
+    path: "/shoppingcart",
     component: () => import("layouts/MainLayout.vue"),
+    meta: { requiresAuth: true }, // Ruta protegida
     children: [
-      { path: "", component: () => import("pages/profile/ProfilePage.vue") }
+      { path: "", component: () => import("pages/shopping/ShoppingCart.vue") }
+    ],
+  },
+  {
+    path: "/padmin",
+    component: () => import("layouts/MainLayout.vue"),
+    meta: { requiresAuth: true }, // Ruta protegida
+    children: [
+      { path: "", component: () => import("pages/admin/PanelAdmin.vue") }
     ],
   },
 

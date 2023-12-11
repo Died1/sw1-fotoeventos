@@ -17,8 +17,8 @@ class CreateEventsTable extends Migration
             $table->id();
             $table->string('title', 100);
             $table->string('detail', 1000)->nullable();
-            $table->date('date_start');
-            $table->date('date_end')->nullable();
+            $table->datetime('date_start');
+            $table->datetime('date_end')->nullable();
             $table->string('qr_url')->nullable();
             $table->string('cover_url')->nullable();
             $table->string('address', 200)->nullable();

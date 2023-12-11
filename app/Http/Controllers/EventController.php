@@ -23,6 +23,9 @@ use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Auth;
 
+use Google\Cloud\Storage\StorageClient;
+
+
 class EventController extends Controller
 {
     use ReKognitionTrait;
@@ -48,16 +51,13 @@ class EventController extends Controller
 
     public function save(EventRequest $request)
     {
-
         $creator = Auth::user();
-
         $validatedData = $request->validated();
-
-        $validatedData['qr_url'] = $this->qr();
-
         $validatedData['creator_id'] = $creator->id;
-
-        return Event::create($validatedData);
+        $event = Event::create($validatedData);
+        $event->qr_url = $this->qr($event);
+        $event->update();
+        return $event;
     }
 
     public function update(EventRequest $request, $id)
@@ -99,31 +99,38 @@ class EventController extends Controller
         return response()->json(['path' => 'https://sw1-fotos.s3.us-east-2.amazonaws.com/' . $photo->name, 'compara' => $resultado]);
     }
 
-    public function qr()
+    public function qr($event)
     {
-
         $result = Builder::create()
             ->writer(new PngWriter())
             ->writerOptions([])
-            ->data('Custom QR code contents')
+            ->data($event->id)
             ->encoding(new Encoding('UTF-8'))
             ->errorCorrectionLevel(ErrorCorrectionLevel::High)
             ->size(300)
             ->margin(10)
             ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
-            ->labelText('This is the label')
+            ->labelText($event->title)
             ->labelFont(new NotoSans(20))
             ->labelAlignment(LabelAlignment::Center)
             ->validateResult(false)
             ->build();
+        $tempFile = sys_get_temp_dir() . $event->id;
+        file_put_contents($tempFile, $result->getString());
+        $storage = new StorageClient([
+            'keyFilePath' => storage_path('clodstoragecredential.json'),
+        ]);
+        $bucket = $storage->bucket('sw12023');
+        $fileName = "events/qr_img/$event->id.png";
+        $bucket->upload(
+            fopen($tempFile, 'r'),
+            [
+                "name" => $fileName,
+                'predefinedAcl' => 'publicRead'
+            ]
+        );
 
-
-        $filename = 'qr_codeeddy.png';
-        // Save it to a file
-        $string=$result->getString();
-
-        return $this->saveS3($string, $filename);
-
+        return $fileName;
     }
     public function compareWithCollection(Request $request)
     {
@@ -165,11 +172,13 @@ class EventController extends Controller
 
     public function notification()
     {
-        $user = User::find(1);
-        $titulo = 'Título de la notificación';
-        $cuerpo = 'Cuerpo de la notificación';
-        $icono = 'https://salgadoeventos.com/wp-content/uploads/2021/04/MG_4393-1536x1024.jpg.webp';
-        $enlace = 'evento/ver/2';
-        $respuesta = $this->sendNotification($user->fcm_token, $titulo, $cuerpo, $icono, $enlace);
+        $users = User::all();
+        foreach ($users as $user) {
+            $titulo = 'Título de la notificación';
+            $cuerpo = 'Tienes nueva foto del evento al que asististe';
+            $icono = 'https://salgadoeventos.com/wp-content/uploads/2021/04/MG_4393-1536x1024.jpg.webp';
+            $enlace = 'https://www.events.com/2/details';
+            $respuesta = $this->sendNotification($user->fcm_token, "hola $user->username", $cuerpo, $icono, $enlace);
+        }
     }
 }

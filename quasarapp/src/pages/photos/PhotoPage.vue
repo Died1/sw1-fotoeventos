@@ -1,14 +1,17 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-col-gutter-md row items-start">
-      <q-list class="col-sm-2 col-xs-4 " v-for="(p, index) in productsImages" :key="index">
-        <q-item clickable v-close-popup style="padding: 0">
+<q-page>
+      <q-list class="row q-ma-sm" >
+        <q-item class="q-pa-sm col-sm-3 col-xs-6 "  v-for="(p, index) in productsImages" :key="index">
           <q-item-section>
             <q-img
-                @click="productIndex = index; toggler = !toggler; "
+
                 :src="p"
                 :ratio="1"
-              />
+              >
+
+            <q-btn icon="shopping_cart" @click="addCart"/>
+
+            </q-img>
           </q-item-section>
         </q-item>
       </q-list>
@@ -17,8 +20,8 @@
         :sources="productsImages"
         :sourceIndex="productIndex"
        />
-    </div>
-  </div>
+
+  </q-page>
 </template>
 
 <script>
@@ -42,10 +45,14 @@ export default defineComponent({
         'https://i.imgur.com/qxtWKzg.jpeg'
       ]
     );
+    const addCart = () => {
+      console.log("flk")
+    }
     return {
       toggler,
       productsImages,
       productIndex,
+      addCart
     }
   }
 })

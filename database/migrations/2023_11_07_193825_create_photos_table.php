@@ -15,7 +15,8 @@ class CreatePhotosTable extends Migration
     {
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('url_preview');
+            $table->string('url_fullsize')->nullable();
             $table->unsignedBigInteger('event_id')->nullable();
             $table->foreign('event_id')->references('id')->on('events')->onDelete('set null');
             $table->timestamps();

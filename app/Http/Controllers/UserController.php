@@ -20,7 +20,7 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'User Created Successfully',
-           
+
         ], 200);
         try {
             //Validated
@@ -64,7 +64,7 @@ class UserController extends Controller
         }
     }
 
-    public function tokenFCM(Request $request)
+    public function tokenFCM(Request $request, $id)
     {
         try {
             $user = Auth::user();

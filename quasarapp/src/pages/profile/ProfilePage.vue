@@ -4,7 +4,7 @@
       <q-card-section class="row justify-center">
         <q-form @submit="updateProfile" class="q-gutter-md" style="width:380px">
           <q-item class="row justify-center">
-            <Photo v-model="profile.photo" />
+            <!-- <Photo v-model="profile.photo" /> -->
           </q-item>
           <!-- <q-input filled v-model="profile.firstname" label="Your username *" hint="username o email" lazy-rules
             :rules="[val => val && val.length > 0 || 'Por favor ingrese username']" />
@@ -26,7 +26,7 @@
 import { ref, onMounted } from 'vue';
 import { api } from 'boot/axios';
 import Photo from './Photo.vue';
-import { obtenerToken } from '../../utils/auth';
+
 export default {
   components: {
     Photo
@@ -45,12 +45,7 @@ export default {
     const updateProfile = async() => {
       loading.value = true;
       try {
-        const {data} = await api.put('/profile',profile, {
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${obtenerToken()}`,
-          },
-        });
+        const {data} = await api.put('/profile',profile);
 
         console.log(data);
 
