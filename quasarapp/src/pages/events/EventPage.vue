@@ -67,7 +67,7 @@
                   </div>
                   <div class="col-md-6 col-xs-12 q-pa-sm">
 
-                    <q-card >
+                    <q-card>
                       <q-img :src="qr_img">
 
                       </q-img>
@@ -101,26 +101,30 @@
         </q-card-section>
         <q-separator />
         <q-card-section class="scroll q-pa-none">
-          <q-scroll-area style="height: 70vh; width:450px" >
+          <q-scroll-area style="height: 70vh; width:450px">
             <q-form ref="myForm" @submit="onSubmit" @reset="onReset">
+              <!-- foto de portada TODO:-->
               <q-card class="bg-grey-3">
-                <img src="https://i.imgur.com/jwly0W6.jpeg" alt="Imagen" style="width: 100%; height: 200px;" />
-
-
+                <input type="file" @change="onCoverPhotoChange" accept="image/*" style="display: none"
+                  ref="refFotoPortada" />
+                <img :src="selectedPhotoUrl" alt="Imagen" style="width: 100%; height: 200px;" />
                 <q-btn @click="actualizarImagen" class="absolute-bottom-right" label="Añádir foto de portada"
                   color="primary" />
               </q-card>
+              <!-- /foto de portada -->
               <div class="q-gutter-md q-pa-md">
 
                 <q-item class="q-pa-none">
                   <q-item-section avatar>
                     <q-avatar>
-                      <img :src="organizer.avatar_url ? organizer.avatar_url : 'https://cdn.quasar.dev/img/boy-avatar.png'">
+                      <img
+                        :src="organizer.avatar_url ? organizer.avatar_url : 'https://cdn.quasar.dev/img/boy-avatar.png'">
                     </q-avatar>
                   </q-item-section>
 
                   <q-item-section>
-                    <q-item-label caption lines="1" class="text-bold">{{organizer.firstname + ' ' + organizer.lastname}}</q-item-label>
+                    <q-item-label caption lines="1" class="text-bold">{{ organizer.firstname + ' ' +
+                      organizer.lastname }}</q-item-label>
                     <q-item-label caption lines="1">Organizador - Tu perfil</q-item-label>
                   </q-item-section>
                 </q-item>
@@ -184,6 +188,7 @@ export default {
     const organizer = authStore.user.user;
 
     const activeTab = ref('informacion');
+    const selectedPhotoUrl = ref('https://i.imgur.com/m2HqiWK.png');
 
     const details = ref('');
     const dateStart = ref('2019/02/01');
@@ -192,13 +197,14 @@ export default {
     const cover_url = ref('');
     const address = ref('');
     const qr_img = ref('');
+    const refFotoPortada = ref(null);
 
 
     const events = ref([]);
 
     const fetchEvents = async () => {
       try {
-        const { data } = await api.get('/events', { headers: { AuthorizationRequired: true }});
+        const { data } = await api.get('/events', { headers: { AuthorizationRequired: true } });
         events.value = data;
       } catch (error) {
         console.log(error);
@@ -228,9 +234,25 @@ export default {
           qr_url: qr_url.value,
           cover_url: cover_url.value,
           address: address.value,
+          cover: null
         };
-        
-        const { data } = await api.post('/events', datos , { headers: { AuthorizationRequired: true } });
+        const formData = new FormData();
+        Object.keys(datos).forEach(key => {
+          formData.append(key, datos[key]);
+        });
+
+        // Agregar la foto de portada al FormData
+        formData.append('cover', refFotoPortada.value);
+        console.log(datos);
+        return;
+
+        const { data } = await api.post('/events',
+          datos,
+          {
+            headers: {
+              AuthorizationRequired: true
+            }
+          });
         // Agrega el nuevo evento a la lista existente
         events.value.push(data);
 
@@ -250,6 +272,18 @@ export default {
       if (myForm.value) {
         myForm.value.submit();
       }
+    }
+    const actualizarImagen = () => {
+      refFotoPortada.value.click();
+    }
+    const onCoverPhotoChange = (event) => {
+
+      const file = event.target.files[0];
+      if (file) {
+        // Obtener la URL de la foto seleccionada
+        selectedPhotoUrl.value = URL.createObjectURL(file);
+      }
+
     }
 
     const showEvent = async (id) => {
@@ -306,10 +340,14 @@ export default {
         'Privado', 'Publico'
       ],
       myForm,
+      refFotoPortada,
+      selectedPhotoUrl,
       onSubmit,
       submitForm,
       showEvent,
-      fetchEvents
+      fetchEvents,
+      actualizarImagen,
+      onCoverPhotoChange
     }
   }
 }
