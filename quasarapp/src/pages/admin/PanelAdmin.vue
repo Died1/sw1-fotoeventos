@@ -17,13 +17,15 @@
         <q-tab-panels v-model="tab" animated>
 
           <q-tab-panel name="profile">
-            <div class="text-h6">Tu Información</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+
+            <ProfilePage />
+
           </q-tab-panel>
 
           <q-tab-panel name="events">
             <EventPage />
           </q-tab-panel>
+
 
           <q-tab-panel name="donwloads">
             <div class="text-h6">Descargas</div>
@@ -40,10 +42,12 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import EventPage from "../events/EventPage.vue";
+import ProfilePage from "../profile/ProfilePage.vue";
 
 export default defineComponent({
   components: {
-    EventPage
+    EventPage,
+    ProfilePage
   },
   setup() {
     const tab = ref('events')

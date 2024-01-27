@@ -3,18 +3,21 @@
     <q-card class="col-md-6 col-xs-12 ">
       <q-card-section class="row justify-center">
         <q-form @submit="updateProfile" class="q-gutter-md" style="width:380px">
-          <q-item class="row justify-center">
-            <!-- <Photo v-model="profile.photo" /> -->
-          </q-item>
-          <!-- <q-input filled v-model="profile.firstname" label="Your username *" hint="username o email" lazy-rules
-            :rules="[val => val && val.length > 0 || 'Por favor ingrese username']" />
- -->
+
+          <PhotoInput
+            @photo-selected="handlePhotoSelected"
+            :urlimage="profile.photo"
+          />
+
+          <q-input v-model="profile.firstname" />
+
+          <q-input v-model="profile.lastname" />
+          <q-input v-model="profile.email" />
+
           <div>
             <q-btn class="full-width" label="Actualizar" type="submit" color="orange" />
           </div>
-          <div class="row items-center justify-center" style="min-height:100px">
-            <q-spinner-cube v-if="loading" :size="'xl'" color="primary" />
-          </div>
+
         </q-form>
       </q-card-section>
     </q-card>
@@ -25,36 +28,61 @@
 
 import { ref, onMounted } from 'vue';
 import { api } from 'boot/axios';
+import { useAuthStore } from 'src/stores/auth';
 import Photo from './Photo.vue';
+import PhotoInput from '../events/PhotoInput.vue';
 
 export default {
   components: {
-    Photo
+    Photo,
+    PhotoInput
   },
   setup() {
+
+    const authStore = useAuthStore();
+    const authUser = authStore.user.user;
+
+    console.log(authUser);
+
     const profile = ref({
-      firstname: '',
-      lastname: '',
-      email: '',
+      firstname: authUser.firstname,
+      lastname: authUser.lastname,
+      email: authUser.email,
       address: '',
       phone: '',
       biography: '',
-      photo: { file: null, url: 'https://i.imgur.com/jwly0W6.jpeg' }
+      photo: authUser.avatar_url
     });
     const loading = ref<Boolean>(false);
-    const updateProfile = async() => {
+    const updateProfile = async () => {
       loading.value = true;
       try {
-        const {data} = await api.put('/profile',profile);
+        const { data } = await api.put('/profile', profile);
 
         console.log(data);
 
       } catch (error) {
         console.log(error)
       }
-      finally{
+      finally {
         loading.value = false;
       }
+    }
+
+    const handlePhotoSelected = async (file: any) => {
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const { data } = await api.post('/profile', formData, {
+        headers:
+        {
+          'Content-Type': 'multipart/form-data',
+          AuthorizationRequired: true
+        }
+      });
+
+
     }
 
     onMounted(() => {
@@ -64,7 +92,8 @@ export default {
     return {
       profile,
       loading,
-      updateProfile
+      updateProfile,
+      handlePhotoSelected
     };
   },
 };

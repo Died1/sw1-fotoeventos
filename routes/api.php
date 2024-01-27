@@ -16,10 +16,14 @@ use App\Http\Controllers\AuthController;
 Route::get('/events/qr', [EventController::class, 'qr']);
 Route::middleware(['auth:sanctum'])->group(function () {
     #Eventos
-    Route::get('/events', [EventController::class, 'get']);
+    Route::get('/events', [EventController::class, 'search']);
+    Route::get('/events/me', [EventController::class, 'getCreatedEvents']);
+    Route::get('/events-assigned', [EventController::class, 'getAssigneds']);
     Route::get('/events/{id}', [EventController::class, 'find']);
     Route::post('/events', [EventController::class, 'save']);
     Route::put('/events/{id}', [EventController::class, 'update']);
+    Route::post('/events/{id}/photos', [PhotoController::class, 'store']);
+
     Route::post('/events/addPhoto/{eventId}/{photographerId}', [EventController::class, 'addPhoto']);
     Route::post('/compare-faces', [EventController::class, 'compareWithCollection']);
     #compras
@@ -32,7 +36,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/media', [MediaController::class, 'upload']);
 
     Route::post('/tokenFCM/{id}', [UserController::class, 'tokenFCM']);
+
+    Route::post('/profile', [UserController::class, 'update']);
+
+
 });
+
+
+    Route::get('/profile/{id}', [UserController::class, 'find']);
 #publicas
 Route::get('/photographers', [PhotographerController::class, 'get']);
 Route::get('/photographers/{id}', [PhotographerController::class, 'find']);
@@ -40,9 +51,7 @@ Route::put('/photographers/{id}', [PhotographerController::class, 'update']);
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
-Route::get('/profile/{id}', [UserController::class, 'find']);
-Route::put('/profile', [UserController::class, 'update']);
+
 
 
 Route::get('/notification', [EventController::class, 'notification']);
-

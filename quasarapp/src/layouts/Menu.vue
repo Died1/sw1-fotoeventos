@@ -2,7 +2,7 @@
   <q-btn round flat>
     <q-avatar size="26px">
       <template v-if="user.avatar_url">
-        <img :src="user.avatar_url">
+        <img :src="'http://localhost:8000'+user.avatar_url">
       </template>
       <template v-else>
         <img src="https://cdn.quasar.dev/img/boy-avatar.png">

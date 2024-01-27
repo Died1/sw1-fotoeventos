@@ -39,6 +39,35 @@ class EventController extends Controller
         return Event::with('photos', 'photographer', 'organizer')->get();
     }
 
+    public function search(Request $request)
+    {
+        // Captura el parámetro de búsqueda "kw" de la solicitud
+        $search = $request->input('kw');
+
+        // Ahora puedes usar la variable $search en tu lógica para filtrar los eventos, por ejemplo:
+        return Event::with('photos', 'photographer', 'organizer')
+            ->where('title', 'like', '%' . $search . '%')
+            ->get();
+
+    }
+
+    public function getCreatedEvents(){
+
+        $creator = Auth::user();
+        return Event::with('photos', 'photographer', 'organizer')
+            ->where('creator_id', $creator->id)
+            ->get();
+    }
+    public function getAssigneds()
+    {
+        $user = Auth::user();
+        return Event::with('photos', 'photographer', 'organizer')
+            ->where('photographer_id', $user->id)
+            ->get();
+    }
+
+
+
     public function find($id)
     {
         $event = Event::with('photos', 'photographer', 'organizer')->find($id);
@@ -51,11 +80,18 @@ class EventController extends Controller
 
     public function save(EventRequest $request)
     {
+        // Guardar la foto en el disco "public"
+        $foto = $request->file('cover');
+        $rutaFoto = $foto->store('events/cover', 'public');
+        // Puedes obtener la URL de la foto almacenada si es necesario
+        $urlFoto = Storage::url($rutaFoto);
+
         $creator = Auth::user();
         $validatedData = $request->validated();
         $validatedData['creator_id'] = $creator->id;
         $event = Event::create($validatedData);
-        $event->qr_url = $this->qr($event);
+        $event->qr_url = $this->generateQR($event);
+        $event->cover_url = $urlFoto;
         $event->update();
         return $event;
     }
@@ -99,7 +135,7 @@ class EventController extends Controller
         return response()->json(['path' => 'https://sw1-fotos.s3.us-east-2.amazonaws.com/' . $photo->name, 'compara' => $resultado]);
     }
 
-    public function qr($event)
+    public function generateQR($event)
     {
         $result = Builder::create()
             ->writer(new PngWriter())
@@ -115,23 +151,16 @@ class EventController extends Controller
             ->labelAlignment(LabelAlignment::Center)
             ->validateResult(false)
             ->build();
-        $tempFile = sys_get_temp_dir() . $event->id;
-        file_put_contents($tempFile, $result->getString());
-        $storage = new StorageClient([
-            'keyFilePath' => storage_path('clodstoragecredential.json'),
-        ]);
-        $bucket = $storage->bucket('sw12023');
-        $fileName = "events/qr_img/$event->id.png";
-        $bucket->upload(
-            fopen($tempFile, 'r'),
-            [
-                "name" => $fileName,
-                'predefinedAcl' => 'publicRead'
-            ]
-        );
 
-        return $fileName;
+        $path = "events/qr_img/$event->id.png";
+        // Guardar el archivo en el disco "public"
+        Storage::disk('public')->put($path, $result->getString());
+        $urlArchivo = Storage::url($path);
+
+        return $urlArchivo;
     }
+
+
     public function compareWithCollection(Request $request)
     {
         $photo = $request->file('file');

@@ -3,66 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
 
-    public function find(){
-
-    }
-    public function update(Request $request)
+    public function find()
     {
+    }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'User Created Successfully',
-
-        ], 200);
+    public function update(UserRequest $request)
+    {
         try {
-            //Validated
-            $validateUser = Validator::make(
-                $request->all(),
-                [
-                    'username' => 'required|string|max:20|unique:users,username,',
-                    'password' => 'required|string|max:20',
-                    'firstname' => 'required|string|max:50',
-                    'lastname' => 'required|string|max:100',
-                    'email' => 'required|email|max:100|unique:users,email,',
-                ]
-            );
+            $foto = $request->file('image') ?? null;
+            if($foto){
+                $rutaFoto =  $foto->store('users/avatar', 'public');
+                $urlFoto = Storage::url($rutaFoto);
 
-            if ($validateUser->fails()) {
+                $user = Auth::user();
+                $user->update([
+                    'avatar_url' => $urlFoto,
+                ]);
                 return response()->json([
-                    'status' => false,
-                    'message' => 'validation error',
-                    'errors' => $validateUser->errors()
-                ], 401);
+                    'status' => true,
+                    'message' => 'successfully.',
+                ], 200);
             }
-
-            $user = User::create([
-                'username' => $request->username,
-                'firstname' => $request->firstname,
-                'lastname' => $request->lastname,
-                'email' => $request->email,
-                'password' => Hash::make($request->password)
-            ]);
-
-            return response()->json([
-                'status' => true,
-                'message' => 'User Created Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
-            ], 200);
-        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
-                'message' => $th->getMessage()
+                'message' => 'Error Al Actualizar',
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error: ' . $e->getMessage(),
             ], 500);
         }
     }
+
+    
 
     public function tokenFCM(Request $request, $id)
     {

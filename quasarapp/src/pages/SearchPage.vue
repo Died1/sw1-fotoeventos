@@ -4,9 +4,13 @@
       Resultados encontrados: {{ events.length }}
     </q-item-label>
     <q-list class="row">
-      <div class="event col-sm-3 col-xs-12" v-for="event in events" :key="event.id">
-        <q-card class="q-ma-sm" >
-          <q-img :src="event.cover_url ? event.cover_url : 'https://cdn.quasar.dev/img/parallax2.jpg'">
+      <div
+        class="event col-sm-3 col-xs-12"
+        v-for="event in events"
+        :key="event.id"
+      >
+        <q-card class="q-ma-sm">
+          <q-img :src="event.cover_url ? `http://localhost:8000${event.cover_url}` : 'https://cdn.quasar.dev/img/parallax2.jpg'">
             <div class="text-h5 absolute-top ">
               <item-section-label class="text-h6 text-color-primary">
                 {{ event.title ? event.title : '' }}
@@ -18,7 +22,8 @@
               </item-section-label>
               <q-btn
                 class="float-right"
-                rounded dense
+                rounded
+                dense
                 icon="photo_library"
                 :to="'/events/'+event.id+'/details'"
               >
@@ -33,47 +38,48 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, watch } from "vue";
-import { api } from 'boot/axios'
+import { api } from "boot/axios";
 import CardEvent from "components/CardEvent.vue";
 
-
 export default defineComponent({
-
   components: {
-    CardEvent
+    CardEvent,
   },
   props: {
     kw: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
   setup(props) {
     const showInfo = ref(false);
     const events = ref([]);
-    const searchEvents = async (search: string) => {
-      const { data, status } = await api.get(`/events?kw=${search}`, { headers: { AuthorizationRequired: true } });
-      events.value = data;
-    }
 
-    console.log(props.kw)
+    const searchEvents = async (search: string) => {
+      const { data, status } = await api.get(`/events?kw=${search}`, {
+        headers: { AuthorizationRequired: true },
+      });
+      console.log('result', data);
+      events.value = data;
+    };
     onMounted(() => {
       searchEvents(props.kw);
     });
 
-    watch(() => props.kw, (newVal, oldVal) => {
-      console.log("kw ha cambiado:", newVal, oldVal);
-
-    });
+    watch(
+      () => props.kw,
+      (newVal, oldVal) => {
+        console.log("kw ha cambiado:", newVal, oldVal);
+      }
+    );
 
     return {
       showInfo,
       events,
-      props
-    }
-  }
-})
-
+      props,
+    };
+  },
+});
 </script>
 
 <style>
@@ -92,7 +98,6 @@ export default defineComponent({
   position: relative;
   /* Asegura que el contenido absoluto se coloque correctamente */
 }
-
 
 /* Otros estilos de .my-card aquí */
 </style>
