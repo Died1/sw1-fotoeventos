@@ -8,7 +8,7 @@ declare module '@vue/runtime-core' {
   }
 }
 
-const api = axios.create({ baseURL: '/api' });
+const api = axios.create({ baseURL: 'https://sw2.campozanodevlab.com/api' });
 
 
 export default boot(({ app }) => {
@@ -28,6 +28,6 @@ export default boot(({ app }) => {
   });
 });
 
-api.defaults.baseURL = '/api';
+api.defaults.baseURL = 'https://sw2.campozanodevlab.com/api';
 
 export { api };

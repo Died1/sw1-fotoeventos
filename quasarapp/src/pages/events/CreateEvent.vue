@@ -156,7 +156,6 @@ export default defineComponent({
         Object.keys(datos).forEach(key => {
           formData.append(key, datos[key]);
         });
-        console.log(formData)
         const { data } = await api.post('/events',
           formData, { headers:
             {
