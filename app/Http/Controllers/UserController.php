@@ -26,13 +26,6 @@ class UserController extends Controller
                 $rutaFoto =  $foto->store('public/users/avatar', 'public');
                 $urlFoto = Storage::url($rutaFoto);
 
-                $storage = new StorageClient();
-                $bucket = $storage->bucket('sw12023');
-                $bucket->upload(
-                    fopen('qr_code.png', 'r')
-                );
-
-
                 $user = Auth::user();
                 $user->update([
                     'avatar_url' => $urlFoto,
