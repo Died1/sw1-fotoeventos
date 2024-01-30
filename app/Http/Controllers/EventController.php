@@ -73,7 +73,7 @@ class EventController extends Controller
     }
 
 
-    public function save(EventRequest $request)
+    public function save(Request $request)
     {
         // Guardar la foto en el disco "public"
         try {
