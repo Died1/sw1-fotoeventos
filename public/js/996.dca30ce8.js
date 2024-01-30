@@ -1,1 +1,0 @@
-"use strict";(globalThis["webpackChunkquasarapp"]=globalThis["webpackChunkquasarapp"]||[]).push([[996],{7996:(a,r,u)=>{u.r(r),u.d(r,{default:()=>h});var e=u(9835);function n(a,r,u,n,s,l){return(0,e.wg)(),(0,e.iD)("h1",null,"hola")}var s=u(499);const l={name:"AlbumPage",setup(){(0,s.iH)(!1);return{}}};var t=u(1639);const p=(0,t.Z)(l,[["render",n]]),h=p}}]);
