@@ -28,9 +28,9 @@ use PhpParser\Node\Stmt\TryCatch;
 
 class EventController extends Controller
 {
-    /* use ReKognitionTrait;
+    use ReKognitionTrait;
     use NotificationTrait;
-    use S3Trait; */
+    use S3Trait;
 
 
 
