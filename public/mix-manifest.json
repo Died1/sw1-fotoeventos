@@ -1,6 +1,5 @@
 {
     "/resources/views/app.blade.php": "/resources/views/app.blade.php",
-    "/clodstoragecredential.json": "/clodstoragecredential.json",
     "/css/116.ea7ca4d6.css": "/css/116.ea7ca4d6.css",
     "/css/191.b5d1a379.css": "/css/191.b5d1a379.css",
     "/css/223.2d745010.css": "/css/223.2d745010.css",
@@ -52,6 +51,7 @@
     "/js/app.js": "/js/app.js",
     "/js/app.js.LICENSE.txt": "/js/app.js.LICENSE.txt",
     "/js/vendor.4deb3a94.js": "/js/vendor.4deb3a94.js",
+    "/main.js": "/main.js",
     "/mix-manifest.json": "/mix-manifest.json",
     "/robots.txt": "/robots.txt",
     "/storage.lnk": "/storage.lnk",
