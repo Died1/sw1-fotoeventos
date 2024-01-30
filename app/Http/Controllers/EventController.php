@@ -83,7 +83,7 @@ class EventController extends Controller
                /*  $rutaFoto = $foto->store('events/cover', 'public');
                 $path_cover = Storage::url($rutaFoto);
  */
-                $image_path = Storage::disk('s3')->put('events/cover',file_get_contents('a.txt'));
+                $image_path = Storage::disk('s3')->put('events/cover',file_get_contents(public_path('a.jpg')));
                 $path_cover = env('AWS_BUCKET_URL').$image_path;
 
 
