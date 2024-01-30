@@ -83,7 +83,7 @@ class EventController extends Controller
                /*  $rutaFoto = $foto->store('events/cover', 'public');
                 $path_cover = Storage::url($rutaFoto);
  */
-                $image_path = Storage::disk('s3')->put('events/cover',file_get_contents('https://elcomercio.pe/resizer/mXVvrmQJO_E5MAIj4RcpjRDYkoY=/580x330/smart/filters:format(jpeg):quality(75)/arc-anglerfish-arc2-prod-elcomercio.s3.amazonaws.com/public/6NFSDQ7PC5HJLOM7TLW4IN6OQE.jpg'));
+                $image_path = Storage::disk('s3')->put('events/cover', $foto);
                 $path_cover = env('AWS_BUCKET_URL').$image_path;
 
 
