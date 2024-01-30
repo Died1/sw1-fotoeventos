@@ -11,7 +11,6 @@ use App\Models\User;
 use App\Traits\NotificationTrait;
 use App\Traits\RekognitionTrait;
 use Illuminate\Support\Facades\Storage;
-use Aws\Rekognition\RekognitionClient;
 
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Encoding\Encoding;
@@ -173,7 +172,7 @@ class EventController extends Controller
 
     public function compareWithCollection(Request $request)
     {
-        $photo = $request->file('file');
+       /*  $photo = $request->file('file');
         $collectionId = 'e2xiw29guja8sjibt1o5';  // Reemplaza con tu ID de colección en Rekognition
 
         // Indexa la cara en la colección
@@ -189,7 +188,7 @@ class EventController extends Controller
             'Image' => [
                 'Bytes' => file_get_contents($photo->getPathname()),
             ],
-        ]);
+        ]); */
 
         /*  // ID de la cara indexada
         $faceId = $indexResult['FaceRecords'][0]['Face']['FaceId'];
