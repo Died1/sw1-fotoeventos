@@ -18,7 +18,7 @@
                   <q-item-section avatar>
                     <q-avatar>
                       <img
-                        :src="organizer.avatar_url ? `http://localhost:8000${organizer.avatar_url}` : 'https://cdn.quasar.dev/img/boy-avatar.png'">
+                        :src="'/'+organizer.avatar_url ? `http://localhost:8000${organizer.avatar_url}` : 'https://cdn.quasar.dev/img/boy-avatar.png'">
                     </q-avatar>
                   </q-item-section>
                   <q-item-section>

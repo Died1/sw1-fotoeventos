@@ -101,6 +101,7 @@ class EventController extends Controller
                 $event->update();
                 return $event;
             }
+            return response()->json(['message' => $foto], 404);
 
         } catch (\Exception $e) {
             //throw $th;
