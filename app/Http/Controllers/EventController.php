@@ -10,7 +10,6 @@ use App\Http\Requests\EventRequest;
 use App\Models\User;
 use App\Traits\NotificationTrait;
 use App\Traits\RekognitionTrait;
-use App\Traits\S3Trait;
 use Illuminate\Support\Facades\Storage;
 use Aws\Rekognition\RekognitionClient;
 
@@ -28,7 +27,6 @@ class EventController extends Controller
 {
     use ReKognitionTrait;
     use NotificationTrait;
-    use S3Trait;
 
 
 
