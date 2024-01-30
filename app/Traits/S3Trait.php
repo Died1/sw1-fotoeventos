@@ -25,7 +25,7 @@ trait S3Trait
                 'Body' => $fileName,
                 'ACL' => 'public-read',
             ]);
-            $path = $s3->getObjectUrl('sw1-fotos', $fileName);
+            $path = $s3->getObjectUrl(env('AWS_BUCKET'), $fileName);
             return  $path;
 
         } catch (S3Exception $e) {

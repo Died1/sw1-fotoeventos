@@ -1,3 +1,4 @@
+import { route } from "quasar/wrappers";
 import {   RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
@@ -28,6 +29,7 @@ const routes: RouteRecordRaw[] = [
                 path: "",
                 component: () => import("pages/events/EventDetail.vue"),
                 
+
             },
         ],
     },

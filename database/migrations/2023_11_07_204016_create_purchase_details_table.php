@@ -16,7 +16,9 @@ class CreatePurchaseDetailsTable extends Migration
         Schema::create('purchase_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('purchase_id')->nullable();
+            $table->unsignedBigInteger('photo_alternative_id')->nullable();
             $table->foreign('purchase_id')->references('id')->on('purchases')->onDelete('set null');
+            $table->foreign('photo_alternative_id')->references('id')->on('photo_alternatives')->onDelete('set null');
             $table->timestamps();
         });
     }

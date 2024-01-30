@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Google\Cloud\Storage\StorageClient;
 
 class UserController extends Controller
 {
@@ -22,8 +23,15 @@ class UserController extends Controller
         try {
             $foto = $request->file('image') ?? null;
             if($foto){
-                $rutaFoto =  $foto->store('users/avatar', 'public');
+                $rutaFoto =  $foto->store('public/users/avatar', 'public');
                 $urlFoto = Storage::url($rutaFoto);
+
+                $storage = new StorageClient();
+                $bucket = $storage->bucket('sw12023');
+                $bucket->upload(
+                    fopen('qr_code.png', 'r')
+                );
+
 
                 $user = Auth::user();
                 $user->update([
@@ -47,7 +55,7 @@ class UserController extends Controller
         }
     }
 
-    
+
 
     public function tokenFCM(Request $request, $id)
     {

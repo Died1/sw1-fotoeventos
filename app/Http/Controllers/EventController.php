@@ -24,7 +24,7 @@ use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Auth;
 
 use Google\Cloud\Storage\StorageClient;
-
+use PhpParser\Node\Stmt\TryCatch;
 
 class EventController extends Controller
 {
@@ -48,10 +48,10 @@ class EventController extends Controller
         return Event::with('photos', 'photographer', 'organizer')
             ->where('title', 'like', '%' . $search . '%')
             ->get();
-
     }
 
-    public function getCreatedEvents(){
+    public function getCreatedEvents()
+    {
 
         $creator = Auth::user();
         return Event::with('photos', 'photographer', 'organizer')
@@ -81,19 +81,33 @@ class EventController extends Controller
     public function save(EventRequest $request)
     {
         // Guardar la foto en el disco "public"
-        $foto = $request->file('cover');
-        $rutaFoto = $foto->store('events/cover', 'public');
-        // Puedes obtener la URL de la foto almacenada si es necesario
-        $urlFoto = Storage::url($rutaFoto);
+        try {
+            //code...
+            $foto = $request->file('cover');
+            $image_path = Storage::disk('s3')->put('events/cover', $foto);
+            $path_cover = env('AWS_BUCKET_URL').$image_path;
 
-        $creator = Auth::user();
-        $validatedData = $request->validated();
-        $validatedData['creator_id'] = $creator->id;
-        $event = Event::create($validatedData);
-        $event->qr_url = $this->generateQR($event);
-        $event->cover_url = $urlFoto;
-        $event->update();
-        return $event;
+            //$rutaFoto = $foto->store('events/cover', 'public');
+            //$path_cover = Storage::url($rutaFoto);
+
+
+            $creator = Auth::user();
+            $validatedData = $request->validated();
+            $validatedData['creator_id'] = $creator->id;
+
+            $token = $creator->fcm_token;
+
+            $this->sendNotification($token, 'Probanndo la notificacion desde APp fotos', 'este es una prueba ants de subir a produccion');
+
+            $event = Event::create($validatedData);
+            $event->qr_url = $this->generateQR($event);
+            $event->cover_url = $path_cover;
+            $event->update();
+            return $event;
+        } catch (\Exception $e) {
+            //throw $th;
+            return response()->json(['message' => $e->getMessage()], 404);
+        }
     }
 
     public function update(EventRequest $request, $id)
@@ -209,5 +223,11 @@ class EventController extends Controller
             $enlace = 'https://www.events.com/2/details';
             $respuesta = $this->sendNotification($user->fcm_token, "hola $user->username", $cuerpo, $icono, $enlace);
         }
+    }
+    public function getPhotos($id)
+    {
+        $event = Event::with('photos')->find($id);
+
+        return $event ? $event->photos : [];
     }
 }

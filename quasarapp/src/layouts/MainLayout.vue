@@ -93,7 +93,7 @@
             dense
             flat
             rounded
-            :to="`search?kw=${search}`"
+            :to="`/search?kw=${search}`"
           ></q-btn>
           <q-btn
             v-else

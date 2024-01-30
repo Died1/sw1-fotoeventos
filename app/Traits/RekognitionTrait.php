@@ -8,28 +8,16 @@ trait ReKognitionTrait
 {
     public function comparar($img1, $img2)
     {
-        $client = new RekognitionClient([
-            'region' => 'us-east-2',
-            'version' => 'latest',
-        ]);
+        $client = new RekognitionClient(['region' => 'us-east-2', 'version' => 'latest']);
 
-        $compareFaceResults = $client->compareFaces([
+        $results = $client->compareFaces([
             'SimilarityThreshold' => 80,
-            'SourceImage' => [
-                'Bytes' => file_get_contents($img1),
-            ],
-            'TargetImage' => [
-                'Bytes' => file_get_contents($img2),
-            ],
+            'SourceImage' => ['Bytes' => file_get_contents($img1)],
+            'TargetImage' => ['Bytes' => file_get_contents($img2)],
         ]);
 
-        $faceMatch = $compareFaceResults["FaceMatches"];
+        $similarity = $results["FaceMatches"][0]["Similarity"] ?? 0;
 
-        if ($faceMatch) {
-
-            return true;
-        }
-
-        return false;
+        return ($similarity > 80) ? true : false;
     }
 }

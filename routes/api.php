@@ -22,7 +22,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/events/{id}', [EventController::class, 'find']);
     Route::post('/events', [EventController::class, 'save']);
     Route::put('/events/{id}', [EventController::class, 'update']);
+    Route::get('/events/{id}/photos', [EventController::class, 'getPhotos']);
     Route::post('/events/{id}/photos', [PhotoController::class, 'store']);
+
+    Route::get('/photo/{id}/alternatives', [PhotoController::class, 'getAlternatives']);
 
     Route::post('/events/addPhoto/{eventId}/{photographerId}', [EventController::class, 'addPhoto']);
     Route::post('/compare-faces', [EventController::class, 'compareWithCollection']);

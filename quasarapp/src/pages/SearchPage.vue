@@ -69,7 +69,8 @@ export default defineComponent({
     watch(
       () => props.kw,
       (newVal, oldVal) => {
-        console.log("kw ha cambiado:", newVal, oldVal);
+        searchEvents(newVal)
+        //console.log("kw ha cambiado:", newVal, oldVal);
       }
     );
 
