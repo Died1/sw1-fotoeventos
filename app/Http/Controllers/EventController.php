@@ -27,8 +27,6 @@ class EventController extends Controller
     use ReKognitionTrait;
     use NotificationTrait;
 
-
-
     public function get()
     {
         return Event::with('photos', 'photographer', 'organizer')->get();
@@ -85,15 +83,16 @@ class EventController extends Controller
  */
                 $image_path = Storage::disk('s3')->put('events/cover', $foto);
                 $path_cover = env('AWS_BUCKET_URL').$image_path;
-
-
                 $creator = Auth::user();
+
+                $isEqual = $this->comparar($foto->get());
+                if($isEqual){
+                    $token = $creator->fcm_token;
+                    $this->sendNotification($token, 'Probanndo la notificacion desde APp fotos', 'este es una prueba ants de subir a produccion');
+                }
+
                 $validatedData = $request->validated();
                 $validatedData['creator_id'] = $creator->id;
-
-                $token = $creator->fcm_token;
-
-                $this->sendNotification($token, 'Probanndo la notificacion desde APp fotos', 'este es una prueba ants de subir a produccion');
 
                 $event = Event::create($validatedData);
                 $event->qr_url = $this->generateQR($event);
