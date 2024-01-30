@@ -28,15 +28,13 @@ const routes: RouteRecordRaw[] = [
             {
                 path: "",
                 component: () => import("pages/events/EventDetail.vue"),
-                
-
             },
         ],
     },
     {
         path: "/search",
         component: () => import("layouts/MainLayout.vue"),
-        meta: { requiresAuth: true }, // Ruta protegida
+        //meta: { requiresAuth: true },
         children: [
             {
                 path: "",
@@ -50,7 +48,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: "/shoppingcart",
         component: () => import("layouts/MainLayout.vue"),
-        meta: { requiresAuth: true }, // Ruta protegida
+        //meta: { requiresAuth: true }, // Ruta protegida
         children: [
             {
                 path: "",

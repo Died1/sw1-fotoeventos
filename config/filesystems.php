@@ -49,14 +49,7 @@ return [
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
-        'gcs' => [
-            'driver' => 'gcs',
-            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID', 'tu-project-id'),
-            'key_file' => storage_path('clodstoragecredential.json'),
-            'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', 'tu-bucket'),
-            'path_prefix' => env('GOOGLE_CLOUD_STORAGE_PATH_PREFIX', null),
-            'storage_api_uri' => env('GOOGLE_CLOUD_STORAGE_API_URI', null),
-        ],
+        
 
     ],
 

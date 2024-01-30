@@ -59,8 +59,6 @@ class EventController extends Controller
             ->get();
     }
 
-
-
     public function find($id)
     {
         $event = Event::with('photos', 'photographer', 'organizer')->find($id);
@@ -73,7 +71,6 @@ class EventController extends Controller
 
     public function save(EventRequest $request)
     {
-        // Guardar la foto en el disco "public"
         try {
             //code...
             $foto = $request->file('cover');
