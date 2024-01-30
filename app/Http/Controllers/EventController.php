@@ -80,11 +80,11 @@ class EventController extends Controller
             //code...
             $foto = $request->file('cover');
             if($foto){
-                $image_path = Storage::disk('s3')->put('events/cover', $foto);
-                $path_cover = env('AWS_BUCKET_URL').$image_path;
+               /*  $image_path = Storage::disk('s3')->put('events/cover', $foto);
+                $path_cover = env('AWS_BUCKET_URL').$image_path; */
 
-                //$rutaFoto = $foto->store('events/cover', 'public');
-                //$path_cover = Storage::url($rutaFoto);
+                $rutaFoto = $foto->store('events/cover', 'public');
+                $path_cover = Storage::url($rutaFoto);
 
 
                 $creator = Auth::user();
