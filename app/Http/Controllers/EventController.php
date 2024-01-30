@@ -79,26 +79,29 @@ class EventController extends Controller
         try {
             //code...
             $foto = $request->file('cover');
-            $image_path = Storage::disk('s3')->put('events/cover', $foto);
-            $path_cover = env('AWS_BUCKET_URL').$image_path;
+            if($foto){
+                $image_path = Storage::disk('s3')->put('events/cover', $foto);
+                $path_cover = env('AWS_BUCKET_URL').$image_path;
 
-            //$rutaFoto = $foto->store('events/cover', 'public');
-            //$path_cover = Storage::url($rutaFoto);
+                //$rutaFoto = $foto->store('events/cover', 'public');
+                //$path_cover = Storage::url($rutaFoto);
 
 
-            $creator = Auth::user();
-            $validatedData = $request->validated();
-            $validatedData['creator_id'] = $creator->id;
+                $creator = Auth::user();
+                $validatedData = $request->validated();
+                $validatedData['creator_id'] = $creator->id;
 
-            $token = $creator->fcm_token;
+                $token = $creator->fcm_token;
 
-            $this->sendNotification($token, 'Probanndo la notificacion desde APp fotos', 'este es una prueba ants de subir a produccion');
+                $this->sendNotification($token, 'Probanndo la notificacion desde APp fotos', 'este es una prueba ants de subir a produccion');
 
-            $event = Event::create($validatedData);
-            $event->qr_url = $this->generateQR($event);
-            $event->cover_url = $path_cover;
-            $event->update();
-            return $event;
+                $event = Event::create($validatedData);
+                $event->qr_url = $this->generateQR($event);
+                $event->cover_url = $path_cover;
+                $event->update();
+                return $event;
+            }
+
         } catch (\Exception $e) {
             //throw $th;
             return response()->json(['message' => $e->getMessage()], 404);
