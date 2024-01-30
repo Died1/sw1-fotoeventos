@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use Aws\Rekognition\RekognitionClient;
 
-trait ReKognitionTrait
+trait RekognitionTrait
 {
     public function comparar($img1, $img2)
     {

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\EventRequest;
 use App\Models\User;
 use App\Traits\NotificationTrait;
-use App\Traits\ReKognitionTrait;
+use App\Traits\RekognitionTrait;
 use App\Traits\S3Trait;
 use Illuminate\Support\Facades\Storage;
 use Aws\Rekognition\RekognitionClient;
@@ -23,8 +23,6 @@ use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Auth;
 
-use Google\Cloud\Storage\StorageClient;
-use PhpParser\Node\Stmt\TryCatch;
 
 class EventController extends Controller
 {
