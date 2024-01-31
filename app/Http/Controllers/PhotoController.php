@@ -20,7 +20,8 @@ class PhotoController extends Controller
                 $path_cover = env('AWS_BUCKET_URL') . $image_path; */
 
                 $path =  $file->store('events/photos', 'public');
-                $urlFoto = Storage::url($path);
+                // Guardar la URL del archivo
+                $urlFoto = Storage::disk('public')->url($path);
 
                 /* // Redimensionar la imagen a 300x250
                 $image = Image::make(storage_path('app/public/' . $path));
