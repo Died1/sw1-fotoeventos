@@ -154,7 +154,7 @@ class EventController extends Controller
             ->validateResult(false)
             ->build();
 
-            $image_path = Storage::disk('s3')->put('events/cover', $result->getString());
+            $image_path = Storage::disk('s3')->put('events/qr_img', $result->getString());
             $path_cover = env('AWS_BUCKET_URL').$image_path;
         /* $path = "events/qr_img/$event->id.png";
         Storage::disk('public')->put($path, $result->getString());
