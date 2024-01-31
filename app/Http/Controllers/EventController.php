@@ -75,10 +75,10 @@ class EventController extends Controller
     {
         try {
             $foto = $request->file('cover');
-            if($foto){
+            if ($foto) {
 
                 $image_path = Storage::disk('s3')->put('events/cover', $foto);
-                $path_cover = env('AWS_BUCKET_URL').$image_path;
+                $path_cover = env('AWS_BUCKET_URL') . $image_path;
 
                 $creator = Auth::user();
                 $validatedData = $request->validated();
@@ -91,7 +91,6 @@ class EventController extends Controller
                 return $event;
             }
             return response()->json(['message' => 'no hay'], 404);
-
         } catch (\Exception $e) {
             //throw $th;
             return response()->json(['message' => $e->getMessage()], 404);
@@ -154,19 +153,21 @@ class EventController extends Controller
             ->validateResult(false)
             ->build();
 
-            $image_path = Storage::disk('s3')->put('events/qr_img', $result);
-            $path_cover = env('AWS_BUCKET_URL').$image_path;
+        $path = "events/qr_img/{$event->id}.png";
+
+        $image_path = Storage::disk('s3')->put($path, $result->getString());
+
         /* $path = "events/qr_img/$event->id.png";
         Storage::disk('public')->put($path, $result->getString());
         $urlArchivo = Storage::url($path); */
 
-        return env('AWS_BUCKET_URL').$image_path;
+        return env('AWS_BUCKET_URL') . $image_path;
     }
 
 
     public function compareWithCollection(Request $request)
     {
-       /*  $photo = $request->file('file');
+        /*  $photo = $request->file('file');
         $collectionId = 'e2xiw29guja8sjibt1o5';  // Reemplaza con tu ID de colección en Rekognition
 
         // Indexa la cara en la colección
@@ -220,5 +221,3 @@ class EventController extends Controller
         return $event ? $event->photos : [];
     }
 }
-
-
