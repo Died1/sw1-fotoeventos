@@ -57,6 +57,7 @@ class EventController extends Controller
         $user = Auth::user();
         return Event::with('photos', 'photographer', 'organizer')
             ->where('photographer_id', $user->id)
+            ->orderByDesc('id')
             ->get();
     }
 
