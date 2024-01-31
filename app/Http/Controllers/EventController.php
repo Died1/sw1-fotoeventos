@@ -74,23 +74,13 @@ class EventController extends Controller
     public function save(EventRequest $request)
     {
         try {
-            //code...
             $foto = $request->file('cover');
             if($foto){
-                #$rutaFoto = $foto->store('events/cover', 'public');
-                #$path_cover = Storage::url($rutaFoto);
 
                 $image_path = Storage::disk('s3')->put('events/cover', $foto);
                 $path_cover = env('AWS_BUCKET_URL').$image_path;
 
                 $creator = Auth::user();
-
-                /* $isEqual = $this->comparar($foto->get());
-                if($isEqual){
-                    $token = $creator->fcm_token;
-                    $this->sendNotification($token, 'Probanndo la notificacion desde APp fotos', 'este es una prueba ants de subir a produccion');
-                } */
-
                 $validatedData = $request->validated();
                 $validatedData['creator_id'] = $creator->id;
 
@@ -164,12 +154,13 @@ class EventController extends Controller
             ->validateResult(false)
             ->build();
 
-        $path = "events/qr_img/$event->id.png";
-        // Guardar el archivo en el disco "public"
+            $image_path = Storage::disk('s3')->put('events/cover', $result->getString());
+            $path_cover = env('AWS_BUCKET_URL').$image_path;
+        /* $path = "events/qr_img/$event->id.png";
         Storage::disk('public')->put($path, $result->getString());
-        $urlArchivo = Storage::url($path);
+        $urlArchivo = Storage::url($path); */
 
-        return $urlArchivo;
+        return env('AWS_BUCKET_URL').$image_path;
     }
 
 
