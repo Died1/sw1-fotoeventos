@@ -22,6 +22,11 @@ class PhotoController extends Controller
                 $image = Image::make($file);
                 $image->fit(250, 200); // Redimensionar la foto a 250x200 manteniendo la proporción
 
+                 // Añadir marca de agua
+                 $watermark = Image::make(storage_path('app/public/watermark.png'));
+                 $image->insert($watermark, 'bottom-right', 10, 10);
+
+
                 // Guardar la foto redimensionada en S3
                 $imagePathRedimensionada = "events/{$eventID}/photos/" . uniqid() . '.jpg';
                 Storage::disk('s3')->put($imagePathRedimensionada, $image->stream()->__toString());
@@ -42,9 +47,6 @@ class PhotoController extends Controller
                 $image = Image::make(storage_path('app/public/' . $path));
                 $image->fit(250, 200);
 
-                // Añadir marca de agua
-                $watermark = Image::make(storage_path('app/public/watermark.png'));
-                $image->insert($watermark, 'bottom-right', 10, 10);
 
                 $image->save();*/
 
