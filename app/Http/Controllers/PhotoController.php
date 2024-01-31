@@ -23,12 +23,12 @@ class PhotoController extends Controller
                 })->save($tempImagePath);
 
                 // Sube la imagen redimensionada a S3
-                $imagePath = "events/{$eventID}/photos/" . uniqid() . '.jpg';
-                Storage::disk('s3')->put($imagePath, file_get_contents($tempImagePath));
+                $imagePath = "events/$eventID/photos/" . uniqid() . '.jpg';
+                /* Storage::disk('s3')->put($imagePath, file_get_contents($tempImagePath));
 
                 // Elimina la imagen temporal
                 unlink($tempImagePath);
-
+ */
                 // Obtén la URL de la imagen en S3
                 //$path_cover = Storage::disk('s3')->url($imagePath);
 
