@@ -23,7 +23,7 @@ class PhotoController extends Controller
                 $image->fit(250, 200); // Redimensionar la foto a 250x200 manteniendo la proporción
 
                 // Cargar la imagen de la marca de agua desde S3
-                $watermarkPath = 'events/qr_img/29.png';
+                $watermarkPath = 'utils/watermark.png';
                 $watermark = Image::make(Storage::disk('s3')->get($watermarkPath));
 
                 // Agregar la marca de agua a la imagen redimensionada
