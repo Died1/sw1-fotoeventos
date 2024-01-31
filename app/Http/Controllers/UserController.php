@@ -23,12 +23,14 @@ class UserController extends Controller
         try {
             $foto = $request->file('image') ?? null;
             if($foto){
-                $rutaFoto =  $foto->store('public/users/avatar', 'public');
-                $urlFoto = Storage::url($rutaFoto);
+/*                 $rutaFoto =  $foto->store('public/users/avatar', 'public');
+                $urlFoto = Storage::url($rutaFoto); */
+                $image_path = Storage::disk('s3')->put('events/cover', $foto);
+                $path_avatar = env('AWS_BUCKET_URL').$image_path;
 
                 $user = Auth::user();
                 $user->update([
-                    'avatar_url' => $urlFoto,
+                    'avatar_url' => $path_avatar,
                 ]);
                 return response()->json([
                     'status' => true,

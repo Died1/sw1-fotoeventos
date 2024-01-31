@@ -226,3 +226,5 @@ class EventController extends Controller
         return $event ? $event->photos : [];
     }
 }
+
+
