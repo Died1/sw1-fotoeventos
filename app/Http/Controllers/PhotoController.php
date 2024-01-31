@@ -15,25 +15,12 @@ class PhotoController extends Controller
         try {
             $file = $request->file('image') ?? null;
             if ($file) {
-                // Ruta temporal donde se guardará la imagen redimensionada antes de subirla a S3
-                $tempImagePath = public_path('temp/image.jpg');
-                // Guarda la imagen temporalmente y redimensiona
-               /*  Image::make($file)->resize(300, null, function ($constraint) {
-                    $constraint->aspectRatio(); // Mantener la proporción de aspecto
-                })->save($tempImagePath); */
 
-                // Sube la imagen redimensionada a S3
-                $imagePath = "events/$eventID/photos/" . uniqid() . '.jpg';
-                /* Storage::disk('s3')->put($imagePath, file_get_contents($tempImagePath));
+                /* $image_path = Storage::disk('s3')->put("events/$eventID/photos", $file);
+                $path_cover = env('AWS_BUCKET_URL') . $image_path; */
 
-                // Elimina la imagen temporal
-                unlink($tempImagePath);
- */
-                // Obtén la URL de la imagen en S3
-                //$path_cover = Storage::disk('s3')->url($imagePath);
-
-                /* $path =  $file->store('events/photos', 'public');
-                $urlFoto = Storage::url($path); */
+                $path =  $file->store('events/photos', 'public');
+                $urlFoto = Storage::url($path);
 
                 /* // Redimensionar la imagen a 300x250
                 $image = Image::make(storage_path('app/public/' . $path));
@@ -46,7 +33,7 @@ class PhotoController extends Controller
                 $image->save();*/
 
                 $photo = new Photo();
-                $photo->url_preview = $imagePath;
+                $photo->url_preview = $urlFoto;
                 $photo->event_id = $eventID;
                 $photo->save();
                 return response()->json([
@@ -65,6 +52,6 @@ class PhotoController extends Controller
     public function getAlternatives($id)
     {
         $photo = Photo::with('alternatives')->find($id);
-        return $photo->alternatives ? $photo->alternatives : [];
+        return $photo->alternatives ? $photo->alternatives: [];
     }
 }

@@ -112,9 +112,12 @@ export default defineComponent({
 
             const product = alternatives.value.find(alternative => alternative.id === id)
 
-            product.cant = 1;
-            
-            shopping.value.add(product);
+           if(product){
+               shopping.value.add(product);
+           }else{
+            alert("no hay producto")
+           }
+
         };
 
         const toggler = ref(false);
@@ -130,7 +133,7 @@ export default defineComponent({
             });
             console.log('result', data);
             data.map((photo) => {
-                photo.url_preview = `http://localhost:8000${photo.url_preview}`
+                photo.url_preview = photo.url_preview;
                 productsImages.value.push(photo);
             })
 
