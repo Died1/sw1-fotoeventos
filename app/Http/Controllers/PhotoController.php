@@ -22,10 +22,12 @@ class PhotoController extends Controller
                 $image = Image::make($file);
                 $image->fit(250, 200); // Redimensionar la foto a 250x200 manteniendo la proporción
 
-                 // Añadir marca de agua
-                 $watermark = Image::make(storage_path('app/public/watermark.png'));
-                 $image->insert($watermark, 'bottom-right', 10, 10);
+                // Cargar la imagen de la marca de agua desde S3
+                $watermarkPath = 'events/qr_img/29.png';
+                $watermark = Image::make(Storage::disk('s3')->get($watermarkPath));
 
+                // Agregar la marca de agua a la imagen redimensionada
+                $image->insert($watermark, 'bottom-right', 10, 10);
 
                 // Guardar la foto redimensionada en S3
                 $imagePathRedimensionada = "events/{$eventID}/photos/" . uniqid() . '.jpg';
@@ -70,6 +72,6 @@ class PhotoController extends Controller
     public function getAlternatives($id)
     {
         $photo = Photo::with('alternatives')->find($id);
-        return $photo->alternatives ? $photo->alternatives: [];
+        return $photo->alternatives ? $photo->alternatives : [];
     }
 }
