@@ -10,7 +10,7 @@
         :key="event.id"
       >
         <q-card class="q-ma-sm">
-          <q-img :src="event.cover_url ? `http://localhost:8000${event.cover_url}` : 'https://cdn.quasar.dev/img/parallax2.jpg'">
+          <q-img :src="event.cover_url ? event.cover_url : 'https://cdn.quasar.dev/img/parallax2.jpg'">
             <div class="text-h5 absolute-top ">
               <item-section-label class="text-h6 text-color-primary">
                 {{ event.title ? event.title : '' }}

@@ -1,7 +1,7 @@
 <template>
     <q-page>
-        <q-list class="row">
-            <div class="col-sm-3 col-xs-12 " v-for="(p, index) in productsImages" :key="index">
+        <q-list class="row q-pa-md">
+            <div class="col-sm-4 col-md-3 col-xs-6 " v-for="(p, index) in productsImages" :key="index">
                 <q-card class="event q-ma-xs">
                     <q-img :src="p.url_preview ? p.url_preview : 'https://cdn.quasar.dev/img/parallax2.jpg'">
                         <div class="text-h5 absolute-top ">
@@ -151,7 +151,6 @@ export default defineComponent({
 
         onMounted(() => {
             fetchPhotos(route.params.id);
-
         });
 
         return {

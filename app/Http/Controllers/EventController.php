@@ -20,6 +20,7 @@ use Endroid\QrCode\Label\Font\NotoSans;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
 
 
 class EventController extends Controller
@@ -77,8 +78,17 @@ class EventController extends Controller
             $foto = $request->file('cover');
             if ($foto) {
 
-                $image_path = Storage::disk('s3')->put('events/cover', $foto);
-                $path_cover = env('AWS_BUCKET_URL') . $image_path;
+                // Redimensionar la foto a 250x200 manteniendo la proporción
+                $image = Image::make($foto);
+                $image->fit(250, 200);
+
+                // Guardar la foto redimensionada en S3
+                $urlFotoRedimensionada = "events/cover/" . uniqid() . '.jpg';
+                Storage::disk('s3')->put($urlFotoRedimensionada, $image->stream()->__toString());
+                $urlFotoRedimensionada = env('AWS_BUCKET_URL') . $urlFotoRedimensionada;
+
+               /*  $image_path = Storage::disk('s3')->put('events/cover', $foto);
+                $path_cover = env('AWS_BUCKET_URL') . $image_path; */
 
                 $creator = Auth::user();
                 $validatedData = $request->validated();
@@ -86,7 +96,7 @@ class EventController extends Controller
 
                 $event = Event::create($validatedData);
                 $event->qr_url = $this->generateQR($event);
-                $event->cover_url = $path_cover;
+                $event->cover_url = $urlFotoRedimensionada;
                 $event->update();
                 return $event;
             }
