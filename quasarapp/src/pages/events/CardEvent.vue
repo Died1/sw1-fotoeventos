@@ -10,7 +10,7 @@
           rounded
           size="100px"
         >
-          <img :src="'http://localhost:8000'+event.cover_url" />
+          <img :src="event.cover_url" />
         </q-avatar>
       </q-item-section>
       <q-item-section>

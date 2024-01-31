@@ -1,6 +1,6 @@
 <template>
   <q-page>
-   
+
     <q-page-section class="row">
 
       <q-toolbar class="q-pa-none">
@@ -20,14 +20,17 @@
 
       <ListEvent :items="events" />
 
-      <CreateEvent v-model:showFormCreateEvent="showFormCreateEvent" />
+      <CreateEvent
+        v-model:showFormCreateEvent="showFormCreateEvent"
+        @update:showFormCreateEvent="handleUpdateShowForm"
+    />
 
     </q-page-section>
   </q-page>
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { api } from "boot/axios";
 import { useAuthStore } from "src/stores/auth";
 import ListEvent from "./ListEvent.vue";
@@ -68,6 +71,14 @@ export default {
         console.log(error);
       }
     };
+
+
+    const handleUpdateShowForm = (value) => {
+        //events.value.push(value)
+        fetchEvents();
+        fetchAssignedEvents();
+    }
+
     onMounted(() => {
       fetchEvents();
       fetchAssignedEvents();
@@ -78,6 +89,7 @@ export default {
       assignedEvents,
       authUser,
       showFormCreateEvent: ref(false),
+      handleUpdateShowForm
     };
   },
 };
