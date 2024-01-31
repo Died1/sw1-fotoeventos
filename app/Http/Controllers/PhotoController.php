@@ -18,9 +18,9 @@ class PhotoController extends Controller
                 // Ruta temporal donde se guardará la imagen redimensionada antes de subirla a S3
                 $tempImagePath = public_path('temp/image.jpg');
                 // Guarda la imagen temporalmente y redimensiona
-                Image::make($file)->resize(300, null, function ($constraint) {
+               /*  Image::make($file)->resize(300, null, function ($constraint) {
                     $constraint->aspectRatio(); // Mantener la proporción de aspecto
-                })->save($tempImagePath);
+                })->save($tempImagePath); */
 
                 // Sube la imagen redimensionada a S3
                 $imagePath = "events/$eventID/photos/" . uniqid() . '.jpg';
