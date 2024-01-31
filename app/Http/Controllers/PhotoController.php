@@ -30,7 +30,7 @@ class PhotoController extends Controller
                 unlink($tempImagePath);
 
                 // Obtén la URL de la imagen en S3
-                $path_cover = Storage::disk('s3')->url($imagePath);
+                //$path_cover = Storage::disk('s3')->url($imagePath);
 
                 /* $path =  $file->store('events/photos', 'public');
                 $urlFoto = Storage::url($path); */
@@ -46,7 +46,7 @@ class PhotoController extends Controller
                 $image->save();*/
 
                 $photo = new Photo();
-                $photo->url_preview = $path_cover;
+                $photo->url_preview = $imagePath;
                 $photo->event_id = $eventID;
                 $photo->save();
                 return response()->json([
