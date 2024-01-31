@@ -29,12 +29,12 @@ class PhotoController extends Controller
                 $watermark = Image::make(storage_path('app/public/watermark.png'));
                 $image->insert($watermark, 'bottom-right', 10, 10);
 
-                $image->save();
+                $image->save();*/
 
                 $photo = new Photo();
-                $photo->url_preview = $urlFoto;
+                $photo->url_preview = $path_cover;
                 $photo->event_id = $eventID;
-                $photo->save(); */
+                $photo->save();
                 return response()->json([
                     'status' => true,
                     'message' => 'File received successfully.',
