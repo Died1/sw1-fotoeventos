@@ -19,10 +19,11 @@ class PhotoController extends Controller
                 $image_path = Storage::disk('s3')->put("events/$eventID/photos", $file);
                 $urlFotoOriginal = env('AWS_BUCKET_URL') . $image_path;
 
+                // Redimensionar la foto a 250x200 manteniendo la proporción
                 $image = Image::make($file);
-                $image->fit(250, 200); // Redimensionar la foto a 250x200 manteniendo la proporción
+                $image->fit(250, 200);
 
-                // Cargar la imagen de la marca de agua desde S3
+                //marca de agua desde S3
                 $watermarkPath = 'utils/watermark.png';
                 $watermark = Image::make(Storage::disk('s3')->get($watermarkPath));
 
@@ -30,32 +31,17 @@ class PhotoController extends Controller
                 $image->insert($watermark, 'bottom-right', 10, 10);
 
                 // Guardar la foto redimensionada en S3
-                $imagePathRedimensionada = "events/{$eventID}/photos/" . uniqid() . '.jpg';
-                Storage::disk('s3')->put($imagePathRedimensionada, $image->stream()->__toString());
-                $urlFotoRedimensionada = env('AWS_BUCKET_URL') . $imagePathRedimensionada;
+                $urlFotoRedimensionada = "events/{$eventID}/photos/" . uniqid() . '.jpg';
+                Storage::disk('s3')->put($urlFotoRedimensionada, $image->stream()->__toString());
+                $urlFotoRedimensionada = env('AWS_BUCKET_URL') . $urlFotoRedimensionada;
 
                 // Guardar la URL de ambas fotos en la base de datos
                 $photoOriginal = new Photo();
-                $photoOriginal->url_preview = $urlFotoOriginal;
+                $photoOriginal->url_fullsize = $urlFotoOriginal;
+                $photoOriginal->url_preview = $urlFotoRedimensionada;
                 $photoOriginal->event_id = $eventID;
                 $photoOriginal->save();
 
-                $photoRedimensionada = new Photo();
-                $photoRedimensionada->url_preview = $urlFotoRedimensionada;
-                $photoRedimensionada->event_id = $eventID;
-                $photoRedimensionada->save();
-
-                /* // Redimensionar la imagen a 300x250
-                $image = Image::make(storage_path('app/public/' . $path));
-                $image->fit(250, 200);
-
-
-                $image->save();*/
-
-                /* $photo = new Photo();
-                $photo->url_preview = $urlFoto;
-                $photo->event_id = $eventID;
-                $photo->save(); */
                 return response()->json([
                     'status' => true,
                     'message' => 'File received successfully.',
