@@ -15,8 +15,22 @@ class PhotoController extends Controller
         try {
             $file = $request->file('image') ?? null;
             if ($file) {
-                $image_path = Storage::disk('s3')->put("events/$eventID/photos", $file);
-                $path_cover = env('AWS_BUCKET_URL') . $image_path;
+                // Ruta temporal donde se guardará la imagen redimensionada antes de subirla a S3
+                $tempImagePath = public_path('temp/image.jpg');
+                // Guarda la imagen temporalmente y redimensiona
+                Image::make($file)->resize(300, null, function ($constraint) {
+                    $constraint->aspectRatio(); // Mantener la proporción de aspecto
+                })->save($tempImagePath);
+
+                // Sube la imagen redimensionada a S3
+                $imagePath = "events/{$eventID}/photos/" . uniqid() . '.jpg';
+                Storage::disk('s3')->put($imagePath, file_get_contents($tempImagePath));
+
+                // Elimina la imagen temporal
+                unlink($tempImagePath);
+
+                // Obtén la URL de la imagen en S3
+                $path_cover = Storage::disk('s3')->url($imagePath);
 
                 /* $path =  $file->store('events/photos', 'public');
                 $urlFoto = Storage::url($path); */
@@ -51,6 +65,6 @@ class PhotoController extends Controller
     public function getAlternatives($id)
     {
         $photo = Photo::with('alternatives')->find($id);
-        return $photo->alternatives ? $photo->alternatives: [];
+        return $photo->alternatives ? $photo->alternatives : [];
     }
 }
