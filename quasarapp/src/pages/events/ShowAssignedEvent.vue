@@ -54,7 +54,7 @@ export default defineComponent({
          const token = ls.userState.token;
          return new Promise((resolve, reject) => {
             resolve({
-               url: `http://localhost:8000/api/events/${event.id}/photos`,
+               url: `https://sw2.campozanodevlab.com/api/events/${event.id}/photos`,
                method: 'POST',
                headers: [
                   { name: 'Authorization', value: `Bearer ${token}` }

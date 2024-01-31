@@ -15,7 +15,7 @@ class PhotoController extends Controller
         try {
             $file = $request->file('image') ?? null;
             if ($file) {
-                $path =  $file->store('events/photos', 'public');
+               /*  $path =  $file->store('events/photos', 'public');
                 $urlFoto = Storage::url($path);
 
                 // Redimensionar la imagen a 300x250
@@ -31,7 +31,7 @@ class PhotoController extends Controller
                 $photo = new Photo();
                 $photo->url_preview = $urlFoto;
                 $photo->event_id = $eventID;
-                $photo->save();
+                $photo->save(); */
                 return response()->json([
                     'status' => true,
                     'message' => 'File received successfully.',

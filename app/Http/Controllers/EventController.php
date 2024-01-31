@@ -154,7 +154,7 @@ class EventController extends Controller
             ->build();
 
         $path = "events/qr_img/{$event->id}.png";
-        $image_path = Storage::disk('s3')->put($path, $result->getString());
+        Storage::disk('s3')->put($path, $result->getString());
 
         /* $path = "events/qr_img/$event->id.png";
         Storage::disk('public')->put($path, $result->getString());
