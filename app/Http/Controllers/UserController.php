@@ -23,7 +23,7 @@ class UserController extends Controller
         try {
             $foto = $request->file('image') ?? null;
             if($foto){
-/*                 $rutaFoto =  $foto->store('public/users/avatar', 'public');
+                /*$rutaFoto =  $foto->store('public/users/avatar', 'public');
                 $urlFoto = Storage::url($rutaFoto); */
                 $image_path = Storage::disk('s3')->put('users/avatar', $foto);
                 $path_avatar = env('AWS_BUCKET_URL').$image_path;

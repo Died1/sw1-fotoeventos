@@ -75,18 +75,19 @@ class EventController extends Controller
             //code...
             $foto = $request->file('cover');
             if($foto){
-               /*  $rutaFoto = $foto->store('events/cover', 'public');
-                $path_cover = Storage::url($rutaFoto);
- */
+                #$rutaFoto = $foto->store('events/cover', 'public');
+                #$path_cover = Storage::url($rutaFoto);
+
                 $image_path = Storage::disk('s3')->put('events/cover', $foto);
                 $path_cover = env('AWS_BUCKET_URL').$image_path;
+
                 $creator = Auth::user();
 
-                $isEqual = $this->comparar($foto->get());
+                /* $isEqual = $this->comparar($foto->get());
                 if($isEqual){
                     $token = $creator->fcm_token;
                     $this->sendNotification($token, 'Probanndo la notificacion desde APp fotos', 'este es una prueba ants de subir a produccion');
-                }
+                } */
 
                 $validatedData = $request->validated();
                 $validatedData['creator_id'] = $creator->id;

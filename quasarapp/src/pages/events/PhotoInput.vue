@@ -45,7 +45,7 @@ export default defineComponent({
     }
     onMounted(()=>{
       if(avatar_url){
-        selectedPhotoUrl.value = 'http://localhost:8000' + avatar_url;
+        selectedPhotoUrl.value = avatar_url;
       }
     })
     return {
