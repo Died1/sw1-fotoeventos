@@ -154,14 +154,13 @@ class EventController extends Controller
             ->build();
 
         $path = "events/qr_img/{$event->id}.png";
-
         $image_path = Storage::disk('s3')->put($path, $result->getString());
 
         /* $path = "events/qr_img/$event->id.png";
         Storage::disk('public')->put($path, $result->getString());
         $urlArchivo = Storage::url($path); */
 
-        return env('AWS_BUCKET_URL') . $image_path;
+        return env('AWS_BUCKET_URL') . "events/qr_img/{$event->id}.png";
     }
 
 

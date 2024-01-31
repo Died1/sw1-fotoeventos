@@ -19,7 +19,7 @@
           >
             <div class="scroll-inner">
               <img
-                :src="'http://localhost:8000' + qrurl"
+                :src="qrurl"
                 alt=""
                 style="max-width: 100%; max-height: 100%;"
               />
@@ -69,7 +69,7 @@ export default defineComponent({
       emit("update:showDialogEvent", false);
     };
     const compartirEvento = () => {
-      const imageUrl = "http://localhost:8000" + urldelQr;
+      const imageUrl = urldelQr;
       console.log(imageUrl);
       if (navigator.share) {
         navigator
