@@ -6,9 +6,15 @@ use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use App\Traits\NotificationTrait;
+use App\Traits\RekognitionTrait;
+use App\Models\User;
+
 
 class PhotoController extends Controller
 {
+    use ReKognitionTrait;
+    use NotificationTrait;
 
     public function store(Request $request, $eventID)
     {
@@ -42,6 +48,8 @@ class PhotoController extends Controller
                 $photoOriginal->event_id = $eventID;
                 $photoOriginal->save();
 
+                $this->procesarImagen($urlFotoOriginal);
+
                 return response()->json([
                     'status' => true,
                     'message' => 'File received successfully.',
@@ -60,4 +68,33 @@ class PhotoController extends Controller
         $photo = Photo::with('alternatives')->find($id);
         return $photo->alternatives ? $photo->alternatives : [];
     }
+
+    private function procesarImagen($urlImageUploaded){
+
+        $users = User::whereNotNull('avatar_url')->whereNotNull('fcm_token')->get();
+
+        try {
+
+            foreach ($users as $user) {
+
+                $token = $user->fcm_token;
+                $urlImageAvatar = $user->avatar_url;
+
+                $isSimilar = $this->comparar($urlImageUploaded, $urlImageAvatar);
+
+                if($isSimilar){
+                    $titulo = "hola $user->username";
+                    $cuerpo = 'Una Foto subia recientemente coincide contigo. verifica si eres tu';
+                    $icono = 'https://salgadoeventos.com/wp-content/uploads/2021/04/MG_4393-1536x1024.jpg.webp';
+                    $enlace = 'https://www.events.com/2/details';
+                    $this->sendNotification($token, $titulo, $cuerpo, $icono, $enlace);
+                }
+
+            }
+        } catch (\Exception $e) {
+
+        }
+
+    }
+
 }
