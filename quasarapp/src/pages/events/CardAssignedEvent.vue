@@ -8,9 +8,9 @@
       <q-item-section side>
         <q-avatar
           rounded
-          size="100px"
+          size="90px"
         >
-          <img :src="event.cover_url" />
+          <img :src="event.cover_url" style="height:95%" />
         </q-avatar>
       </q-item-section>
       <q-item-section>
